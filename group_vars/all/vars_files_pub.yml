@@ -1,0 +1,46 @@
+# Usernames
+username: foo
+
+# Security of the server
+ssh_port: 9999
+my_ip: 192.0.0.1
+pwd_user: your_encrypted_password
+my_key: /Users/your-user/.ssh/id_rsa.pub
+
+# License & pwd
+license_newrelic: your_license
+owncloud_db_pwd: your_pwd
+
+# Rtorrent
+seedbox_master:
+  ports: 
+    first: "45566:45566"
+    second: "9527:9527/udp"
+  name: seedbox-master
+
+seedbox_slave:
+  ports: 
+    first: "1369:9527/udp"
+  names: 
+    first: seedbox-slave-1
+
+# Files download
+files:
+  master: file-master
+  slave: 
+    first: file-slave-1
+
+# Hostnames
+hosts:
+  cadvisor: your-url.com
+  files:
+    first: your-url.com
+    second: your-url.com
+  gogs: your-url.com
+  jenkins: your-url.com
+  owncloud: your-url.com
+  owncloud_backup: your-url.com
+  seedbox_master: your-url.com
+  seedbox_slaves: 
+    first: your-url.com
+  php: your-url.com

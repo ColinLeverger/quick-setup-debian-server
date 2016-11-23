@@ -1,0 +1,18 @@
+---
+# tasks file for cadvisor
+
+- name: cadvisor contener installation
+  docker:
+    name: cadvisor
+    image: google/cadvisor:latest
+    state: started
+    expose:
+    - 8080
+    volumes:
+    - "/:/rootfs:ro"
+    - "/var/run:/var/run:rw"
+    - "/sys:/sys:ro"
+    - "/var/lib/docker/:/var/lib/docker:ro"
+    env:
+      VIRTUAL_HOST: "{{ hosts.cadvisor }}"
+      VIRTUAL_PORT: 8080

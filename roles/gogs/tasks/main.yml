@@ -1,0 +1,27 @@
+---
+# tasks file for gogs
+- name: Ensure that gogs home exists
+  file: path=/home/gogs state=directory
+
+- name: Create docker mysql database
+  docker:
+    name: db-gogs
+    image: tutum/mysql
+    state: started
+    env:
+      ON_CREATE_DB: "gogs"
+      MYSQL_USER: gogs
+      MYSQL_PASS: gogs
+
+- name: gogs docker setup
+  docker:
+    name: gogs
+    image: gogs/gogs
+    state: started
+    links:
+    - "db-gogs:db-gogs"
+    volumes:
+    - "/home/gogs:/data"
+    env:
+      VIRTUAL_PORT: 3000
+      VIRTUAL_HOST: "{{ hosts.gogs }}"

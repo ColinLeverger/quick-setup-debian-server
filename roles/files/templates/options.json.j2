@@ -1,0 +1,351 @@
+/*
+h5ai 0.24.1
+http://larsjung.de/h5ai/
+
+Options
+*/
+
+{
+	/*
+	Spacing of the main content.
+
+	Left and right will be added to a minimum of 30px. Top and bottom
+	are calculated relative to the top and bottom bar heights.
+	*/
+	"spacing": {
+		"maxWidth": 960,
+		"top": 50,
+		"right": "auto",
+		"bottom": 50,
+		"left": "auto"
+	},
+
+	/*
+	General view options.
+
+	- modes: array, subset of ["details", "grid", "icons"]
+		the first value indicates the default view mode. If only one value
+		is given the view mode is fixed and the selector buttons are hidden.
+		The user selected view mode is also stored local in modern browsers
+		so that it will be persistent.
+	- sizes: array, subset of [16, 24, 32, 48, 64, 96]
+		the first value indicates the default view mode. If only one value
+		is given the view mode is fixed and the selector buttons are hidden.
+		The user selected view mode is also stored local in modern browsers
+		so that it will be persistent.
+	- setParentFolderLabels: set parent folder labels to real folder names
+	- hideParentFolderLinks: hide parent folder links in the main view
+	- hideFolders: hide all folders in the main view
+	- binaryPrefix: set to true uses 1024B=1KiB when formatting file sizes (see http://en.wikipedia.org/wiki/Binary_prefix)
+	- indexFiles: consider folder with those files as non h5ai folders
+	- ignore: don't list items matching these regular expressions
+	- smartBrowsing: use History API if available (no need to reload the whole page)
+	- extInNewWindow: open non-h5ai links in new window/tab
+	*/
+	"view": {
+		"modes": ["details", "grid", "icons"],
+		"sizes": [48, 24, 96],
+		"setParentFolderLabels": true,
+		"hideParentFolderLinks": false,
+		"hideFolders": false,
+		"binaryPrefix": false,
+		"indexFiles": ["index.html", "index.htm", "index.php"],
+		"ignore": ["^\\.", "^_h5ai"],
+		"smartBrowsing": true,
+		"extInNewWindow": false
+	},
+
+
+
+	/*** Extensions (in alphabetical order) ***/
+
+	/*
+	Watch and update current folder content.
+
+	- interval: number, update interval in milliseconds, at least 1000
+	*/
+	"autorefresh": {
+		"enabled": true,
+		"interval": 5000
+	},
+
+	/*
+	Show a clickable breadcrumb.
+	*/
+	"crumb": {
+		"enabled": true
+	},
+
+	/*
+	Allow customized header and footer files.
+	First looks for	files "_h5ai.header.html" and "_h5ai.footer.html" in the current directory.
+	If not found it looks in all parent	directories (starting in the current directory) for
+	files "_h5ai.headers.html" and "_h5ai.footers.html"	until it finds one.	Note the different
+	filenames: "header" (only current) - "headers" (current and sub directories)!
+	The file's content will be placed inside a <div/> tag above/below the main content.
+	*/
+	"custom": {
+		"enabled": true
+	},
+
+	/* [EXPERIMENTAL]
+	Allow file deletion.
+	*/
+	"delete": {
+		"enabled": true
+	},
+
+	/* [EXPERIMENTAL]
+	File upload via drag'n'drop. Folders are not supported.
+	The working file size seems to be very browser dependent.
+
+	- maxfiles: number, max number of files per upload
+	- maxfilesize: number, file size is in MB
+	*/
+	"dropbox": {
+		"enabled": false,
+		"maxfiles": 10,
+		"maxfilesize": 1000
+	},
+
+	/*
+	Enable packaged download of selected entries.
+
+	- type: "php-tar", "shell-tar" or "shell-zip"
+	- packageName: basename of the download package, null for current foldername
+	*/
+	"download": {
+		"enabled": true,
+		"type": "php-tar",
+		"packageName": null
+	},
+
+	/*
+	Allow filtering the displayed files and folders.
+	Will check entries for right order of characters, i.e.
+	"ab" matches "ab", "axb", "xaxbx" but not "ba".
+	Space separated sequences get OR-ed.
+
+	Filters will be treated as JavaScript regular expressions
+	if you prefix them with "re:".
+	*/
+	"filter": {
+		"enabled": true
+	},
+
+	/*
+	Calc the size of folders.
+	*/
+	"foldersize": {
+		"enabled": true
+	},
+
+	/*
+	Adds Google Analytics asynchronous tracking code.
+
+	for example:
+	"gaq": [
+		["_setAccount", "UA-xxxxxx-x"],
+		["_setDomainName", ".your-domain.tld"],
+		["_trackPageview"],
+		["_trackPageLoadTime"]
+	]
+
+	see: http://support.google.com/googleanalytics/bin/topic.py?hl=en&topic=27612
+	*/
+	"google-analytics": {
+		"enabled": false,
+		"gaq": []
+	},
+
+	/*
+	Localization, for example "en", "de" etc. - see "_h5ai/conf/l10n" folder for
+	possible values. Adjust it to your needs. If lang is not found
+	it defaults to "en".
+
+	- lang: default language
+	- useBroserLang: boolean, try to use browser language
+	*/
+	"l10n": {
+		"enabled": true,
+		"lang": "en",
+		"useBrowserLang": true
+	},
+
+	/*
+	Link the hover effects between crumb, main view and tree.
+	*/
+	"link-hover-states": {
+		"enabled": true
+	},
+
+	/*
+	Shows the server mode in the bottom left corner.
+
+	- display:
+		0: only show mode
+		1: mode and servername
+		2: mode, servername and -version
+	*/
+	"mode": {
+		"enabled": true,
+		"display": 2
+	},
+
+	/*
+	Adds Piwik tracker javascript code.
+
+	- baseURL: do not include the protocol, e.g. "mydomain.tld/piwik"
+	- idSite: number
+	*/
+	"piwik-analytics": {
+		"enabled": false,
+		"baseURL": "some/url",
+		"idSite": 1
+	},
+
+	/*
+	Show an image preview on click.
+
+	- types: array of types
+	*/
+	"preview-img": {
+		"enabled": true,
+		"types": ["bmp", "gif", "ico", "image", "jpg", "png"]
+	},
+
+	/*
+	Show text file preview on click.
+	"types" maps file types to SyntaxHighligher brushes.
+	For available brushes see http://alexgorbatchev.com/SyntaxHighlighter/manual/brushes/
+
+	Additional type are:
+	 - "markdown" to render Markdown text
+	 - "none" for floating text
+	 - "fixed" for fixed width text
+
+	- types: maps types to brushes
+	*/
+	"preview-txt": {
+		"enabled": true,
+		"types": {
+			"authors": "fixed",
+			"copying": "fixed",
+			"c": "c",
+			"cpp": "cpp",
+			"css": "css",
+			"diff": "diff",
+			"h": "c",
+			"hpp": "cpp",
+			"install": "fixed",
+			"log": "fixed",
+			"java": "java",
+			"js": "js",
+			"json": "js",
+			"makefile": "xml",
+			"markdown": "markdown",
+			// "php": "php",
+			"python": "python",
+			"readme": "fixed",
+			"rb": "ruby",
+			"rtf": "fixed",
+			"script": "shell",
+			"text": "fixed",
+			"xml": "xml"
+		}
+	},
+
+	/*
+	Show QRCodes on hovering files.
+
+	- size: width and height in pixel
+	*/
+	"qrcode": {
+		"enabled": true,
+		"size": 150
+	},
+
+	/* [EXPERIMENTAL]
+	Allow to rename files.
+	No GUI yet.
+	*/
+	"rename": {
+		"enabled": false
+	},
+
+	/*
+	Make entries selectable (first mouse button + drag).
+	At the moment only needed for packaged download and delete.
+
+	- checkboxes: boolean, show a checkbox on mouse over item
+	*/
+	"select": {
+		"enabled": true,
+		"checkboxes": true
+	},
+
+	/*
+	Default sort order.
+	"column" and "reverse" are locally stored.
+
+	- column: int, 0 for "Name", 1 for "Date", 2 for "Size"
+	- reverse: boolean, false for ascending, true for descending
+	- ignorecase: boolean, compare ignorecase
+	- natural: boolean, use natural sort order
+	*/
+	"sort": {
+		"enabled": true,
+		"column": 0,
+		"reverse": false,
+		"ignorecase": true,
+		"natural": false
+	},
+
+	/*
+	Show additional info in a statusbar.
+	*/
+	"statusbar": {
+		"enabled": true
+	},
+
+	/*
+	Show thumbnails for image files. Needs the "/_h5ai/cache" folder to be
+	writable for the web Server.
+
+	- img: array of types
+	- mov: array of types
+	- doc: array of types
+	- delay: delay in milliseconds after "dom-ready" before thumb-requesting starts
+	- size: number, size in pixel of the generated thumbnails
+	- exif: boolean, use included EXIF thumbs if possible
+	*/
+	"thumbnails": {
+		"enabled": true,
+		"img": ["bmp", "gif", "ico", "image", "jpg", "png"],
+		"mov": ["video"],
+		"doc": ["pdf", "ps"],
+		"delay": 1,
+		"size": 96,
+		"exif": true
+	},
+
+	/*
+	Replace window title with current breadcrumb.
+	*/
+	"title": {
+		"enabled": true
+	},
+
+	/*
+	Show a folder tree.
+	Note that this might affect performance significantly.
+
+	- slide: boolean, slide tree bar into viewport if there is enough space
+	- maxSubfolders: max number of subfolders to show in tree
+	*/
+	"tree": {
+		"enabled": true,
+		"slide": true,
+		"maxSubfolders": 50
+	}
+}

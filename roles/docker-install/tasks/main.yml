@@ -1,0 +1,71 @@
+---
+# tasks file for docker
+
+# - name: Purge lxc docker
+#   apt: 
+#     name=lxc-docker*
+#     purge=yes
+
+# - name: Purge docker.io*
+#   apt: 
+#     name=docker.io*
+#     purge=yes
+
+- name: Update apt
+  apt: update_cache=yes
+
+- name: Install apt-transport-https
+  apt: name=apt-transport-https state=present
+
+- name: Install ca-certificates
+  apt: name=ca-certificates state=present
+
+- name: Update cache policy for Docker Install
+  command: apt-cache policy docker-engine
+
+- name: Add pgk key
+  command: apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
+  become: yes
+  become_method: sudo
+
+- name: create file docker.list
+  template: 
+    src=templates/docker.list.j2
+    dest=/etc/apt/sources.list.d/docker.list
+    owner=root
+    group=root
+    mode=0755
+
+- name: Update apt
+  apt: update_cache=yes
+
+- name: Install docker
+  apt: name=docker-engine state=present
+
+- name: Install docker-py
+  pip: name=docker-py state=present
+
+- name: Add docker group
+  group: name=docker state=present
+
+- name: Add {{ username }} to docker group
+  command: gpasswd -a {{ username }} docker
+  # notify:
+  #   restart docker  #commented because do not want to break everything during tests
+
+# TODO : add the real 'uname -s'-'uname -m' url part (Linux-x86_64)
+- name: Download docker compose
+  get_url: 
+    url="https://github.com/docker/compose/releases/download/1.6.2/docker-compose-Linux-x86_64"
+    dest="/usr/local/bin/docker-compose"
+
+- name: Make docker compose executable
+  file: 
+    path="/usr/local/bin/docker-compose"
+    mode=0755
+
+
+
+
+
+

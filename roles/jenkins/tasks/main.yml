@@ -1,0 +1,26 @@
+---
+# tasks file for jenkins
+
+- name: Ensure that Jenkins_home exists
+  file: path=/home/jenkins_home state=directory owner={{ username }}
+
+# Note: this Jenkins is inside Docker but it has to have access to Docker itself
+# So, I mount docker inside docker. This is not good (security issues...), and Jenkins should thus be
+# installed on the host directly.
+# FIXME
+- name: Jenkins docker setup
+  docker:
+    name: myjenkins
+    image: jenkins
+    state: started
+    docker_user: root
+    volumes:
+    - "/usr/lib/x86_64-linux-gnu/libapparmor.so.1:/usr/lib/x86_64-linux-gnu/libapparmor.so.1"
+    - "/usr/bin/docker:/bin/docker"
+    - "/var/run/docker.sock:/var/run/docker.sock"
+    - "/home/jenkins_home:/var/jenkins_home"
+    ports:
+    - "50000:50000"
+    env:
+      VIRTUAL_PORT: 8080
+      VIRTUAL_HOST: "{{ hosts.jenkins }}"

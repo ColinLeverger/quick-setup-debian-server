@@ -1,0 +1,86 @@
+---
+# tasks file for securisation
+- name: Update apt
+  apt: update_cache=yes
+
+- name: Install sudo
+  apt: name=sudo state=present
+
+- name: Add user {{ username }}
+  user: 
+    name="{{ username }}"
+    comment="Colin LEVERGER"
+    state=present
+    password={{ pwd_user }}
+    groups=sudo
+    append=yes
+
+- name: Add {{ username }} sudo
+  command: adduser {{ username }} sudo
+
+- name: Install .bashrc for {{ username }} user
+  template: 
+    src="templates/bashrc.j2"
+    dest="/home/{{ username }}/.bashrc"
+    owner={{ username }}
+    mode=777
+
+- name: Install fail2ban
+  apt: name=fail2ban state=installed
+
+- name: Configure fail2ban
+  command: cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
+  notify:
+    - restart fail2ban
+
+- name: Install rkhunter
+  apt: name=rkhunter state=installed
+
+- name: Create folder for authorized_keys {{ username }}
+  file: 
+    path="/home/{{ username }}/.ssh/"
+    state=directory
+    mode=0755
+
+- name: Add authorized_keys file
+  template: 
+    src={{ my_key }}
+    dest="/home/{{ username }}/.ssh/authorized_keys"
+    owner="{{ username }}"
+    group="{{ username }}"
+
+- name: Disallow password authentication
+  lineinfile: 
+    dest=/etc/ssh/sshd_config
+    regexp="^PasswordAuthentication"
+    line="PasswordAuthentication no"
+    state=present
+  notify:
+    - restart ssh
+
+- name: change SSHD port
+  lineinfile: 
+    dest=/etc/ssh/sshd_config
+    regexp="^Port 22"
+    line="Port {{ssh_port}}"
+    state=present
+  notify:
+    - restart ssh
+
+- name: Allow only {{ username }} user to login
+  lineinfile: 
+    dest=/etc/ssh/sshd_config
+    regexp="^AllowUsers"
+    line="AllowUsers {{ username }}"
+    state=present
+  notify:
+    - restart ssh
+
+- name: Disallow root SSH access
+  lineinfile: 
+    dest=/etc/ssh/sshd_config
+    regexp="^PermitRootLogin"
+    line="PermitRootLogin no"
+    state=present
+  notify:
+    - restart ssh

@@ -1,0 +1,7 @@
+main.retry
+group_vars/all/vars_file.yml
+roles/reverse-proxy/templates/*
+roles/reverse-proxy/tasks/my_specialconfs.yml
+roles/securisation/templates/*
+roles/seedbox/tasks/my_specialconfs.yml
+roles/seedbox/templates/*

@@ -1,0 +1,58 @@
+---
+# tasks file for file-streaming
+- name: Create special conf folder for file streaming
+  file:
+    path="/home/{{ username }}/file-streaming/"
+    state=directory
+    mode=777
+
+- name: Special conf for server
+  copy: 
+    src="templates/h5ai-special.conf.j2"
+    dest="/home/{{ username }}/file-streaming/h5ai-special.conf"
+    owner=root
+    mode=777
+
+- name: Special conf for file streaming
+  copy: 
+    src="templates/options.json.j2"
+    dest="/home/{{ username }}/file-streaming/options.json"
+    owner=root
+    mode=777
+
+- name: "{{ files.master }}" docker setup
+  docker:
+    name: "{{ files.master }}"
+    image: smdion/docker-h5ai
+    state: started
+    expose:
+    - 443
+    volumes:
+    - "/rtorrent/finished/:/var/www"
+    - "/home/{{ username }}/file-streaming/h5ai-special.conf:/etc/nginx/sites-available/h5ai"
+    - "/home/{{ username }}/file-streaming:/config"
+    env:
+      VIRTUAL_HOST: "{{ hosts.files.first }}"
+      VIRTUAL_PORT: 443
+      ALLOW_OVERRIDE: true
+
+- name: "{{ files.slave.first }}" docker setup
+  docker:
+    name: "{{ files.slave.first }}"
+    image: smdion/docker-h5ai
+    state: started
+    expose:
+    - 443
+    volumes:
+    - "/rtorrent2/finished/:/var/www"
+    - "/home/{{ username }}/file-streaming/h5ai-special.conf:/etc/nginx/sites-available/h5ai"
+    - "/home/{{ username }}/file-streaming:/config"
+    env:
+      VIRTUAL_HOST: "{{ hosts.files.second }}"
+      VIRTUAL_PORT: 443
+      ALLOW_OVERRIDE: true
+
+
+
+
+

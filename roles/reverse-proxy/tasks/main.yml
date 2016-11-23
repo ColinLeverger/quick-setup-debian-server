@@ -1,0 +1,50 @@
+---
+# tasks file for reverse-proxy
+
+# 1. Create folders
+- name: Create folder for reverse-proxy configuration
+  file: 
+    path="/home/{{ username }}/reverse-proxy/"
+    state=directory
+
+- name: Create folder for certs
+  file: 
+    path="/home/{{ username }}/reverse-proxy/certs"
+    state=directory
+
+- name: Create folder for htpasswd
+  file: 
+    path="/home/{{ username }}/reverse-proxy/htpasswd"
+    state=directory
+
+- name: Create folder for vhosts configuration
+  file: 
+    path="/home/{{ username }}/reverse-proxy/vhost.d"
+    state=directory
+
+# 2. Special configuration
+# Copy crt, configuration files, htpasswords... for each of the desired services
+# The certs and htpassword should be already generated and are uploaded directly to the
+# host machine. Then you simply mount folders on the reverse-proxy docker contener.
+# FIXME: provide a template for my_specialconfs.yml
+- include: my_specialconfs.yml
+
+# 3. Docker contener
+- name: reverse-proxy docker setup
+  docker:
+    name: reverse-proxy
+    image: jwilder/nginx-proxy
+    state: started
+    ports:
+    - "80:80"
+    - "443:443"
+    volumes:
+    - "/home/{{ username }}/reverse-proxy/certs:/etc/nginx/certs"
+    - "/home/{{ username }}/reverse-proxy/vhost.d:/etc/nginx/vhost.d:ro"
+    - "/home/{{ username }}/reverse-proxy/htpasswd:/etc/nginx/htpasswd:ro"
+    - "/var/run/docker.sock:/tmp/docker.sock:ro"
+
+
+
+
+

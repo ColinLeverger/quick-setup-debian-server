@@ -1,0 +1,33 @@
+---
+# tasks file for basic-services
+- name: Update apt
+  apt: update_cache=yes
+
+- name: Install git
+  apt: name=git state=present
+
+- name: Install screen
+  apt: name=screen state=present
+
+- name: Install htop
+  apt: name=htop state=present
+
+- name: Install unzip
+  apt: name=unzip state=present
+
+- name: Install Python
+  apt: 
+    name={{item}}
+    state=present
+  with_items:
+    - libbz2-dev
+    - libsqlite3-dev
+    - libreadline-dev
+    - zlib1g-dev
+    - libncurses5-dev
+    - libgdbm-dev
+    - python
+    - python-pip
+
+- name: Make sure pip upgraded
+  command: easy_install -U pip

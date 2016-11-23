@@ -1,0 +1,55 @@
+---
+# tasks file for srv-voeux
+# 1 - Clone repos
+
+- name: Create special folder for sites
+  file:
+    path="/home/{{ username }}/sites/"
+    state=directory
+    mode=0755
+
+- name: Clone repos for srv-voeux
+  git:
+    repo="https://github.com/ColinLeverger/srv-php-voeux.git"
+    dest="/home/{{ username }}/sites/srv-php-voeux/"
+
+# 2 - Docker management
+
+- name: Remove docker conteners if exists
+  docker:
+    name:  "{{item.name}}"
+    image: "{{item.image}}"
+    state: absent
+  with_items:
+    - {name: 'db-srv-php-voeux', image: 'tutum/mysql'}
+    - {name: 'apache2-srv-php-voeux', image: 'tutum/apache-php'}
+  become: yes
+  become_user: root
+  become_method: sudo
+  retries: 5
+
+- name: Create docker mysql database
+  docker:
+    name: db-srv-php-voeux
+    image: tutum/mysql
+    state: started
+    volumes:
+    - "/home/{{ username }}/sites/srv-php-voeux/Dump_Projet.sql:/tmp/Dump_Projet.sql"
+    env:
+      ON_CREATE_DB: "voeux"
+      STARTUP_SQL: "/tmp/Dump_Projet.sql"
+      MYSQL_USER: voeux
+      MYSQL_PASS: voeux
+
+- name: Create docker apache2
+  docker:
+    name: apache2-srv-php-voeux
+    image: tutum/apache-php
+    links:
+    - "db-srv-php-voeux:db-srv-php-voeux"
+    state: started
+    volumes:
+    - "/home/{{ username }}/sites/srv-php-voeux/:/var/www/html/"
+    env:
+      ALLOW_OVERRIDE: true
+      VIRTUAL_HOST: "{{ hosts.php }}"

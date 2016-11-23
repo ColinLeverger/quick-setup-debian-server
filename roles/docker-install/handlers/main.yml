@@ -1,0 +1,6 @@
+---
+# handlers file for docker
+- name: restart Docker
+  command: service docker restart
+  become: yes
+  become_method: sudo

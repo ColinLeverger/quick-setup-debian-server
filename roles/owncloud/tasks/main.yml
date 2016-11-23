@@ -1,0 +1,48 @@
+---
+- name: Create docker owncloud mysql database
+  docker:
+    name: db-owncloud
+    image: mariadb
+    state: started
+    env:
+      MYSQL_ROOT_PASSWORD: "{{ owncloud_db_pwd }}"
+
+- name: Ensure directory created
+  file: path={{ item }} state=directory
+  with_items:
+    - "/home/owncloud"
+    - "/home/owncloud/apps"
+    - "/home/owncloud/config"
+    - "/home/owncloud/data"
+
+- name: Create docker owncloud
+  docker:
+    name: owncloud
+    image: owncloud
+    links:
+    - "db-owncloud:db-owncloud"
+    state: started
+    volumes:
+    - "/home/owncloud/apps:/var/www/html/apps"
+    - "/home/owncloud/config:/var/www/html/config"
+    - "/home/owncloud/data:/var/www/html/data"
+    env:
+      VIRTUAL_HOST: "{{ hosts.owncloud }}"
+
+- name: Create the backup contener for database
+  docker:
+    name: owncloud-db-backup
+    image: hauptmedia/mariadb-backup
+    links:
+      - "db-owncloud:db-owncloud"
+    state: started
+    volumes:
+      - "/rtorrent/finished/:/var/backups"
+    env:
+      VIRTUAL_HOST: "{{ hosts.owncloud_backup }}"
+      VIRTUAL_PORT: 18080
+      TIMEZONE: "Europe/Paris"
+      SCHEDULE: "0 0 3 * *"
+      BACKUP_METHOD: "mysqldump"
+      BACKUP_OPTS: "-u root -p {{ owncloud_db_pwd }} -h db-owncloud -d /var/backups/owncloud-db-backup.sql"
+
