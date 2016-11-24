@@ -1,0 +1,26 @@
+- name: Gogs configuration
+  template: 
+    src="templates/your-site.com"
+    dest="/home/{{ username }}/reverse-proxy/vhost.d/your-site.com"
+    owner=root
+    mode=0755
+
+- name: SSL crts and keys for file servers
+  template: 
+    src="templates/{{item}}.j2"
+    dest="/home/{{ username }}/reverse-proxy/certs/{{item}}"
+    owner=root
+    mode=600
+  with_items:
+    - your-site.com.crt
+    - your-site.com.key
+    - your-site-2.com.crt
+    - your-site-2.com.key
+
+- name: Auth for cadvisor configuration
+  template: 
+    src="templates/your-site.com.j2"
+    dest="/home/{{ username }}/reverse-proxy/htpasswd/your-site.com.fr"
+    owner={{ username }}
+    mode=0755
+    
