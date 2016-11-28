@@ -14,13 +14,13 @@
     image: jenkins
     state: started
     docker_user: root
-    volumes:
-    - "/usr/lib/x86_64-linux-gnu/libapparmor.so.1:/usr/lib/x86_64-linux-gnu/libapparmor.so.1"
-    - "/usr/bin/docker:/bin/docker"
-    - "/var/run/docker.sock:/var/run/docker.sock"
+    volumes:      
     - "/home/jenkins_home:/var/jenkins_home"
-    ports:
-    - "50000:50000"
+    # - "/usr/lib/x86_64-linux-gnu/libapparmor.so.1:/usr/lib/x86_64-linux-gnu/libapparmor.so.1"
+    # - "/usr/bin/docker:/bin/docker"
+    # - "/var/run/docker.sock:/var/run/docker.sock"
+    # ports:
+    # - "50000:50000"
     env:
       VIRTUAL_PORT: 8080
       VIRTUAL_HOST: "{{ hosts.jenkins }}"
