@@ -31,7 +31,7 @@
 
 # 3. Docker contener
 - name: reverse-proxy docker setup
-  docker:
+  docker_container:
     name: reverse-proxy
     image: jwilder/nginx-proxy
     state: started

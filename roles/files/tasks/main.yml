@@ -21,7 +21,7 @@
     mode=777
 
 - name: "{{ files.master }}" docker setup
-  docker:
+  docker_container:
     name: "{{ files.master }}"
     image: smdion/docker-h5ai
     state: started
@@ -37,7 +37,7 @@
       ALLOW_OVERRIDE: true
 
 - name: "{{ files.slave.first }}" docker setup
-  docker:
+  docker_container:
     name: "{{ files.slave.first }}"
     image: smdion/docker-h5ai
     state: started

@@ -16,7 +16,7 @@
 # 2 - Docker management
 
 - name: Remove docker conteners if exists
-  docker:
+  docker_container:
     name:  "{{item.name}}"
     image: "{{item.image}}"
     state: absent
@@ -29,7 +29,7 @@
   retries: 5
 
 - name: Create docker mysql database
-  docker:
+  docker_container:
     name: db-srv-php-voeux
     image: tutum/mysql
     state: started
@@ -42,7 +42,7 @@
       MYSQL_PASS: voeux
 
 - name: Create docker apache2
-  docker:
+  docker_container:
     name: apache2-srv-php-voeux
     image: tutum/apache-php
     links:

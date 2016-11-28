@@ -4,7 +4,7 @@
   file: path=/home/gogs state=directory
 
 - name: Create docker mysql database
-  docker:
+  docker_container:
     name: db-gogs
     image: tutum/mysql
     state: started
@@ -14,7 +14,7 @@
       MYSQL_PASS: gogs
 
 - name: gogs docker setup
-  docker:
+  docker_container:
     name: gogs
     image: gogs/gogs
     state: started

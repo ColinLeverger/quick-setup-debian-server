@@ -9,7 +9,7 @@
 # installed on the host directly.
 # FIXME
 - name: Jenkins docker setup
-  docker:
+  docker_container:
     name: myjenkins
     image: jenkins
     state: started
@@ -17,7 +17,7 @@
     volumes:      
     - "/home/jenkins_home:/var/jenkins_home"
     # - "/usr/lib/x86_64-linux-gnu/libapparmor.so.1:/usr/lib/x86_64-linux-gnu/libapparmor.so.1"
-    # - "/usr/bin/docker:/bin/docker"
+    # - "/usr/bin/docker_container:/bin/docker"
     # - "/var/run/docker.sock:/var/run/docker.sock"
     # ports:
     # - "50000:50000"

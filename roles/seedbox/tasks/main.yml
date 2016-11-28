@@ -21,7 +21,7 @@
 
 # 3. Cleanup: remove existing docker conteners
 - name: Remove docker conteners if exist
-  docker:
+  docker_container:
     name: "{{ item.name }}"
     image: "{{ item.image }}"
     state: absent

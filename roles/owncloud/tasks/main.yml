@@ -1,6 +1,6 @@
 ---
 - name: Create docker owncloud mysql database
-  docker:
+  docker_container:
     name: db-owncloud
     image: mariadb
     state: started
@@ -16,7 +16,7 @@
     - "/home/owncloud/data"
 
 - name: Create docker owncloud
-  docker:
+  docker_container:
     name: owncloud
     image: owncloud
     links:
@@ -30,7 +30,7 @@
       VIRTUAL_HOST: "{{ hosts.owncloud }}"
 
 - name: Create the backup contener for database
-  docker:
+  docker_container:
     name: owncloud-db-backup
     image: hauptmedia/mariadb-backup
     links:
