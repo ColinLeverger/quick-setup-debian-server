@@ -1,3 +1,4 @@
+# To use me, change my extension: "txt" -> "yml"
 # Usernames
 username: foo
 

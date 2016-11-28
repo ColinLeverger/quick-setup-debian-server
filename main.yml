@@ -1,25 +1,25 @@
 ---
-- hosts: root
-  roles:
-    - securisation
+# - hosts: root
+#   roles:
+#     - securisation
 
 - hosts: user
   roles:
-    - basic-services
-    - newrelic
-    - role: ansible-role-java
-      when: "ansible_os_family == 'Debian'"
-      java_packages:
-        - openjdk-8-jdk
-    - docker-install
-    - reverse-proxy
-    - srv-voeux
-    - seedbox
-    - files
+    # - basic-services
+    # - newrelic
+    # - role: ansible-role-java
+    #   when: "ansible_os_family == 'Debian'"
+    #   java_packages:
+    #     - openjdk-8-jdk
+    # - docker-install
+    # - reverse-proxy
+    # - srv-voeux
+    # - seedbox
+    # - files
     - jenkins
-    - gogs
-    - cadvisor
-    - owncloud
+    # - gogs
+    # - cadvisor
+    # - owncloud
 
 # Run the following command to launch the playbook and roles.
 # ansible-playbook -b --ask-sudo-pass main.yml -i hosts
