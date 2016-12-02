@@ -2,9 +2,9 @@
 
 Ansible automatic setup to deploy a Debian 8 server from scratch with only one command.
 
-Included in this setup:
+# Included in this setup
 
-* Secure of the server:
+* securisation of the server:
     - Create a new user with its own password,
     - Disable root authentification & password authentification (use of SSH keys),
     - Install and configure security services, including:
@@ -13,8 +13,8 @@ Included in this setup:
     - Change SSH default port
 * Installation of Newrelic agent to monitor the server
 * Installation of basic stuff for various uses:
-    - htop,
-    - Python,
+    - `htop`,
+    - `Python`,
     - ...
 * Installation of Docker. This will be the only thing running in the server considered, all services will be dockerized.
 * Installation of various docker services:
@@ -30,15 +30,37 @@ Included in this setup:
 # How to run the script
 
 1. Identify which services you need. The file `main.yml` is used to tell Ansible which roles to play. Simply comment/uncomment the ones you don't need :)
-2. Customise variables. Under `./group_vars/all/`, there is a file `vars_file.txt`.
+2. Customise variables. Under `./group_vars/all/`, there is a file named `vars_file.txt`.
   * Change all the variables you need inside of this file,
-  * Change the extension of the file from `.txt` to `.yml`
+  * Change the extension of the file from `.txt` to `.yml`.
 3. Create template files needed to execution of the playbook (see next section for explanations)
-4. Run the command `ansible-playbook -b --ask-sudo-pass main.yml -i hosts`
-5. Grab a coffee, chill out... Because everything is done now :)
+4. Run the command `ansible-playbook -b --ask-sudo-pass main.yml -i hosts`; type the password you have configured in `./group_vars/all/vars_file.txt`
+5. Grab a coffee, chill out... Because everything is done now - you only have to wait for the end of the execution. :)
 
-# Specific configurations
-## Main configuration file
+_Note: if for some reason, the deployment fails after the securisation of the server, you should comment the `- securisation` role. If you forget to do so, you will have an error (server unreachable) because root auth is disabled & SSH port is changed after the securisation!_
+
+# Specific Configurations
+## Main Configuration File
+### Unix Encrypted Password
+To generate the encrypted password of your user:
+```
+mkpasswd --method=sha-512
+```
+
+If this utility is not installed on your system then you can still easily generate these passwords using Python. See: http://docs.ansible.com/ansible/faq.html#how-do-i-generate-crypted-passwords-for-the-user-module
+
+### seedbox
+
+It is possible to run multiple seedbox on the same server. If you want to do so, a `rtorrent`then will be used as a master and this master can have several slaves.
+
+That is why we consider here two Ansible dictionaries: one for `seedbox_master` and one for `seedbox_slave`. `ports` are the ports you need to expose to make the service run and `name[s]` are the names of the docker containers.
+
+Further information concerning the customisation of the seedboxes can be found at the following address, see: https://github.com/kfei/docktorrent
+
+### Hostnames
+
+If you are using a reverse proxy, it is certainly because you have `some-url.pointing-to-your-server.co` ; in this section, you can customise the URL of each of the services.
+
 ## reverse-proxy
 ## seedbox
 ## files
