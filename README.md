@@ -55,7 +55,7 @@ mkpasswd --method=sha-512
 
 If this utility is not installed on your system then you can still easily generate these passwords using Python. See: http://docs.ansible.com/ansible/faq.html#how-do-i-generate-crypted-passwords-for-the-user-module
 
-### seedbox
+### Seedbox
 
 It is possible to run multiple seedbox on the same server. If you want to do so, a `rtorrent` will be used as a master and this master can have several slaves.
 
@@ -70,8 +70,8 @@ Further information concerning the customisation of the seedboxes can be found a
 
 If you are using a reverse proxy, it is certainly because you have `some-url.pointing-to-your-server.co` ; in this section, you can customise the URL of each of the services.
 
-## reverse-proxy
-### my_specialconfs_pub.yml
+## Reverse-proxy
+### "tasks/my_specialconfs_pub.yml"
 
 Configure certs, special configurations and htpassword for desired services. For more details, see:
 
@@ -79,30 +79,32 @@ Configure certs, special configurations and htpassword for desired services. For
 * HTTP Auth: https://github.com/jwilder/nginx-proxy#basic-authentication-support
 * Special configuration for one service: https://github.com/jwilder/nginx-proxy#per-virtual_host
 
-### templates/
+### "templates/"
 
 This folder contains everything needed in previous step, such as:
 - Certs,
 - htpasswd files,
 - Special configuration files...
 
-## seedbox
-### my_specialconfs_pub.yml
+## Seedbox
+### "tasks/my_specialconfs_pub.yml"
 
 Copy htpasswd files for seedboxes.
 
-### templates/
+### "templates/"
 
 This folder contains the htpasswd files needed in previous step.
 
-# Improvements & Contributions
+# Improvements & TODOs
 
 - Bugs:
     * `mariadb` for owncloud on some servers,
     * `python-pip` installation fails sometime.
 - Refactor code (in particular variables structure) to have a better code quality,
-- Improve workaround for having multiple seedboxes on the same host: so far, it is not a brilliant solution,
-- Write tests...
+- Improve workaround for having multiple seedboxes on the same host: using screens is not a brilliant solution, and I am really interested in something prettier (maybe customizing the `Dockerfile` of rtorrent?),
+- Write tests.
+
+If you find bugs & improvements, feel free to submit an issue, fork this project and send pull requests! :) 
 
 
 
