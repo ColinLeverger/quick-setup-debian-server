@@ -1,8 +1,13 @@
 # Quick Setup Debian Server
 
-Ansible automatic setup to deploy a Debian 8 server from scratch with only one command.
+Ansible setup to configure a blank Debian 8 server automatically with only one command.
 
-# Included in this setup
+# Quick Start
+
+1. Customise variables in `./group_vars/all/vars_file.txt` and change extention of the file from `.txt` to `.yml`.
+2. Run `ansible-playbook -b --ask-sudo-pass main.yml -i hosts`.
+
+# Included in this Setup
 
 * Securisation of the server:
     - Create a new user with its own password,
@@ -27,7 +32,7 @@ Ansible automatic setup to deploy a Debian 8 server from scratch with only one c
     - `cadvisor`: install & configure cAdvisor to monitor all the services created. Use of cAdvisor, see: https://github.com/google/cadvisor.
     - `owncloud`: install & configure an ownCloud server.
 
-# How to run the script
+# How to Run the Scripts
 
 1. Identify which services you need. The file `main.yml` is used to tell Ansible which roles to play. Simply comment/uncomment the ones you don't need. :)
 2. Customise variables. Under `./group_vars/all/`, there is a file named `vars_file.txt`:
@@ -43,6 +48,7 @@ _Note: if for some reason, the deployment fails after the securisation of the se
 ## Main Configuration File
 ### Unix Encrypted Password
 To generate the encrypted password of your user:
+
 ```
 mkpasswd --method=sha-512
 ```
@@ -75,12 +81,10 @@ Configure certs, special configurations and htpassword for desired services. For
 
 ### templates/
 
-This folder contains:
+This folder contains everything needed in previous step, such as:
 - Certs,
 - htpasswd files,
-- Special configurations...
-
-... Everything needed in previous step :)
+- Special configuration files...
 
 ## seedbox
 ### my_specialconfs_pub.yml
