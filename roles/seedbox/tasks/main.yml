@@ -1,20 +1,16 @@
 ---
 # tasks file for seedbox
 # 1. Create folders to store files
-# For master seedbox
-- name: Ensure that /rtorrent exists
-  file: path=/rtorrent state=directory
-
-- name: Ensure that /rtorrent/finished exists
-  file: path=/rtorrent/finished state=directory
-
-# For first slave
-- name: Ensure that /rtorrent2 exists
-  file: path=/rtorrent2 state=directory
-
-
-- name: Ensure that /rtorrent2/finished exists
-  file: path=/rtorrent2/finished state=directory
+# For master and slave seedbox
+- name: Ensure that directories needed exist
+  file: 
+    path="{{ item }}"
+    state=directory
+  with_items:
+    - "/rtorrent"
+    - "/rtorrent/finished"
+    - "/rtorrent2"    
+    - "/rtorrent2/finished"
 
 # 2. Copy .htpasswd files
 - include: my_specialconfs.yml
@@ -26,8 +22,8 @@
     image: "{{ item.image }}"
     state: absent
   with_items:
-    - {name: '{{ seedbox_master.name }}', image: 'kfei/docktorrent'}
-    - {name: '{{ seedbox_slave.names.first }}', image: 'kfei/docktorrent'}
+    - { name: '{{ seedbox_master.name }}', image: 'kfei/docktorrent' }
+    - { name: '{{ seedbox_slave.names.first }}', image: 'kfei/docktorrent' }
   become: yes
   become_user: root
   become_method: sudo
@@ -56,7 +52,8 @@
   become_user: root
   become_method: sudo
 
- - name: "{{ seedbox_master.name }}" setup
+# Dirty turnaround: launch a seedbox on a detached screen...
+- name: "{{ seedbox_master.name }} setup"
   command: "screen -dmS {{ seedbox_master.name }} bash -c 'docker run -it -p {{ seedbox_master.ports.first }} --restart=always -p {{ seedbox_master.ports.second }} --dns 8.8.8.8 -v /rtorrent/:/rtorrent -v /rtorrent/finished/.htpasswd:/usr/share/nginx/html/rutorrent/.htpasswd -e VIRTUAL_HOST={{ hosts.seedbox_master }} --name {{ seedbox_master.name }} kfei/docktorrent'"
   become: yes
   become_user: "{{ username }}"
@@ -70,7 +67,7 @@
   become_user: root
   become_method: sudo
 
-- name: "{{ seedbox_slave.names.first }}" setup
+- name: "{{ seedbox_slave.names.first }} setup"
   command: "screen -dmS {{ seedbox_slave.names.first }} bash -c 'docker run -it -p {{ seedbox_slave.ports.first }} --restart=always --dns 8.8.8.8 -v /rtorrent2/:/rtorrent -v /rtorrent2/finished/.htpasswd:/usr/share/nginx/html/rutorrent/.htpasswd -e VIRTUAL_HOST={{ hosts.seedbox_slaves.first }} --name {{ seedbox_slave.names.first }} kfei/docktorrent'"
   become: yes
   become_user: "{{ username }}"

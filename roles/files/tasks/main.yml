@@ -7,20 +7,20 @@
     mode=777
 
 - name: Special conf for server
-  copy: 
+  template: 
     src="templates/h5ai-special.conf.j2"
     dest="/home/{{ username }}/file-streaming/h5ai-special.conf"
     owner=root
     mode=777
 
 - name: Special conf for file streaming
-  copy: 
+  template: 
     src="templates/options.json.j2"
     dest="/home/{{ username }}/file-streaming/options.json"
     owner=root
     mode=777
 
-- name: "{{ files.master }}" docker setup
+- name: "{{ files.master }} docker setup"
   docker_container:
     name: "{{ files.master }}"
     image: smdion/docker-h5ai
@@ -36,7 +36,7 @@
       VIRTUAL_PORT: 443
       ALLOW_OVERRIDE: true
 
-- name: "{{ files.slave.first }}" docker setup
+- name: "{{ files.slave.first }} docker setup"
   docker_container:
     name: "{{ files.slave.first }}"
     image: smdion/docker-h5ai
@@ -51,8 +51,4 @@
       VIRTUAL_HOST: "{{ hosts.files.second }}"
       VIRTUAL_PORT: 443
       ALLOW_OVERRIDE: true
-
-
-
-
 

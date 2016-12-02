@@ -1,6 +1,5 @@
 ---
 # tasks file for jenkins
-
 - name: Ensure that Jenkins_home exists
   file: path=/home/jenkins_home state=directory owner={{ username }}
 
@@ -13,7 +12,7 @@
     name: myjenkins
     image: jenkins
     state: started
-    docker_user: root
+    privileged: yes
     volumes:      
     - "/home/jenkins_home:/var/jenkins_home"
     # - "/usr/lib/x86_64-linux-gnu/libapparmor.so.1:/usr/lib/x86_64-linux-gnu/libapparmor.so.1"
