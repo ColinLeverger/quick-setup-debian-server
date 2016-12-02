@@ -6,18 +6,18 @@ Ansible automatic setup to deploy a Debian 8 server from scratch with only one c
 
 * Securisation of the server:
     - Create a new user with its own password,
-    - Disable root authentification & password authentification (use of SSH keys),
+    - Disable root & password authentification (use of SSH keys),
     - Install and configure security services, including:
         + Fail2ban
         + Rkhunter
-    - Change SSH default port
+    - Change SSH default port.
 * Installation of Newrelic agent to monitor the server.
 * Installation of basic stuff for various uses:
     - `htop`,
     - `Python`,
     - ...
 * Installation of Docker. This will be the only thing running in the server considered, all services will be dockerized.
-* Installation of various docker services:
+* Installation of various Docker services:
     - `reverse-proxy`: install & configure a reverse proxy to route all the http requests to the good dockerized service. Based on `jwilder/nginx-proxy` docker scripts. See: https://github.com/jwilder/nginx-proxy
     - `srv-voeux`: install & configure a php website used in my portfolio. _You probably won't need that... ;)_
     - `seedbox`: install & configure several seedbox. Based on `kfei/docktorrent` docker scripts. See: https://github.com/kfei/docktorrent
@@ -33,7 +33,7 @@ Ansible automatic setup to deploy a Debian 8 server from scratch with only one c
 2. Customise variables. Under `./group_vars/all/`, there is a file named `vars_file.txt`:
   * Change all the variables you need inside of this file,
   * Change the extension of the file from `.txt` to `.yml`.
-3. Create template files needed to execution of the playbook (see next section for more explanations about the templates)
+3. Create template files (SSL certs, htpasswd files, ...) needed to configure the different services (see next section for more explanations about the templates and files needed)
 4. Run the command `ansible-playbook -b --ask-sudo-pass main.yml -i hosts`; type the password you have configured in `./group_vars/all/vars_file.txt`
 5. Grab a coffee, chill out... Because everything is done now - you only have to wait for the end of the execution. :)
 
@@ -68,6 +68,7 @@ If you are using a reverse proxy, it is certainly because you have `some-url.poi
 ### my_specialconfs_pub.yml
 
 Configure certs, special configurations and htpassword for desired services. For more details, see:
+
 * SSL: https://github.com/jwilder/nginx-proxy#ssl-support
 * HTTP Auth: https://github.com/jwilder/nginx-proxy#basic-authentication-support
 * Special configuration for one service: https://github.com/jwilder/nginx-proxy#per-virtual_host
@@ -92,8 +93,11 @@ This folder contains the htpasswd files needed in previous step.
 
 # Improvements & Contributions
 
-- Bug with mariadb for owncloud on some servers
-- Refactor code to have a better structure
+- Bugs:
+    * `mariadb` for owncloud on some servers,
+    * `python-pip` installation fails sometime.
+- Refactor code (in particular variables structure) to have a better code quality,
+- Improve workaround for having multiple seedboxes on the same host: so far, it is not a brilliant solution,
 - Write tests...
 
 
