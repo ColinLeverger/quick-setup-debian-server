@@ -1,5 +1,5 @@
 [root]
-alias1 ansible_ssh_host="{{ my_ip }}" ansible_ssh_port=22 ansible_connection=ssh ansible_user=root
+alias1 ansible_ssh_host="{{ ip }}" ansible_ssh_port=22 ansible_connection=ssh ansible_user=root
 
 [user]
-alias2 ansible_ssh_host="{{ my_ip }}" ansible_ssh_port="{{ ssh_port }}" ansible_connection=ssh ansible_ssh_user="{{ username }}"
+alias2 ansible_ssh_host="{{ ip }}" ansible_ssh_port="{{ ssh_port }}" ansible_connection=ssh ansible_ssh_user="{{ user.name }}"

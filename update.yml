@@ -1,8 +1,3 @@
----
-- hosts: root
-  roles:
-    - securisation
-
 - hosts: user
   roles:
     - basic-services
@@ -16,6 +11,3 @@
     - gogs
     - cadvisor
     - owncloud
-
-# Run the following command to launch the playbook and roles.
-# ansible-playbook -b --ask-sudo-pass main.yml -i hosts

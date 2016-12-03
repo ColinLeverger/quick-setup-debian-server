@@ -1,31 +1,35 @@
 # TEMPLATE FILE
 # To use this template, change its extension: "txt" -> "yml"
 
-# Usernames
-username: foo
+# User configuration
+# To generate the encrypted pwd, see: http://docs.ansible.com/ansible/faq.html#how-do-i-generate-crypted-passwords-for-the-user-module
+user:
+  name: your_user
+  pwd: your_encrypted_pwd
 
 # Security of the server
-ssh_port: 9999
-my_ip: 192.0.0.1
-pwd_user: your_encrypted_password
-my_key: /Users/your-user/.ssh/id_rsa.pub
+ssh_port: 1234
+ip: 192.168.0.1
+my_key: /Users/your_local_user/.ssh/id_rsa.pub
 
 # License & pwd
 license_newrelic: your_license
-owncloud_db_pwd: your_pwd
+db_owncloud_pwd: your_password
 
 # Rtorrent
 seedbox_master:
+  name: master
   ports: 
-    first: "45566:45566"
-    second: "9527:9527/udp"
-  name: seedbox-master
+    dl: "45566:45566"
+    up: "9527:9527/udp"
 
-seedbox_slave:
+# Here there is only one slave ("first") but you can add as many as you want.
+seedbox_slaves:
+  names: 
+    first: first-slave
   ports: 
     first: "1369:9527/udp"
-  names: 
-    first: seedbox-slave-1
+
 
 # Files download
 files:

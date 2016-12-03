@@ -4,14 +4,14 @@
 
 - name: Create special folder for sites
   file:
-    path="/home/{{ username }}/sites/"
+    path="/home/{{ user.name }}/sites/"
     state=directory
     mode=0755
 
 - name: Clone repos for srv-voeux
   git:
     repo="https://github.com/ColinLeverger/srv-php-voeux.git"
-    dest="/home/{{ username }}/sites/srv-php-voeux/"
+    dest="/home/{{ user.name }}/sites/srv-php-voeux/"
 
 # 2 - Docker management
 
@@ -34,7 +34,7 @@
     image: tutum/mysql
     state: started
     volumes:
-    - "/home/{{ username }}/sites/srv-php-voeux/Dump_Projet.sql:/tmp/Dump_Projet.sql"
+    - "/home/{{ user.name }}/sites/srv-php-voeux/Dump_Projet.sql:/tmp/Dump_Projet.sql"
     env:
       ON_CREATE_DB: "voeux"
       STARTUP_SQL: "/tmp/Dump_Projet.sql"
@@ -49,7 +49,7 @@
     - "db-srv-php-voeux:db-srv-php-voeux"
     state: started
     volumes:
-    - "/home/{{ username }}/sites/srv-php-voeux/:/var/www/html/"
+    - "/home/{{ user.name }}/sites/srv-php-voeux/:/var/www/html/"
     env:
       ALLOW_OVERRIDE: true
       VIRTUAL_HOST: "{{ hosts.php }}"

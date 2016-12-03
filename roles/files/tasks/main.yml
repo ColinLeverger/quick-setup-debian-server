@@ -2,21 +2,21 @@
 # tasks file for file-streaming
 - name: Create special conf folder for file streaming
   file:
-    path="/home/{{ username }}/file-streaming/"
+    path="/home/{{ user.name }}/file-streaming/"
     state=directory
     mode=777
 
 - name: Special conf for server
   template: 
     src="templates/h5ai-special.conf.j2"
-    dest="/home/{{ username }}/file-streaming/h5ai-special.conf"
+    dest="/home/{{ user.name }}/file-streaming/h5ai-special.conf"
     owner=root
     mode=777
 
 - name: Special conf for file streaming
   template: 
     src="templates/options.json.j2"
-    dest="/home/{{ username }}/file-streaming/options.json"
+    dest="/home/{{ user.name }}/file-streaming/options.json"
     owner=root
     mode=777
 
@@ -29,8 +29,8 @@
     - 443
     volumes:
     - "/rtorrent/finished/:/var/www"
-    - "/home/{{ username }}/file-streaming/h5ai-special.conf:/etc/nginx/sites-available/h5ai"
-    - "/home/{{ username }}/file-streaming:/config"
+    - "/home/{{ user.name }}/file-streaming/h5ai-special.conf:/etc/nginx/sites-available/h5ai"
+    - "/home/{{ user.name }}/file-streaming:/config"
     env:
       VIRTUAL_HOST: "{{ hosts.files.first }}"
       VIRTUAL_PORT: 443
@@ -45,8 +45,8 @@
     - 443
     volumes:
     - "/rtorrent2/finished/:/var/www"
-    - "/home/{{ username }}/file-streaming/h5ai-special.conf:/etc/nginx/sites-available/h5ai"
-    - "/home/{{ username }}/file-streaming:/config"
+    - "/home/{{ user.name }}/file-streaming/h5ai-special.conf:/etc/nginx/sites-available/h5ai"
+    - "/home/{{ user.name }}/file-streaming:/config"
     env:
       VIRTUAL_HOST: "{{ hosts.files.second }}"
       VIRTUAL_PORT: 443

@@ -5,7 +5,7 @@
     image: mariadb
     state: started
     env:
-      MYSQL_ROOT_PASSWORD: "{{ owncloud_db_pwd }}"
+      MYSQL_ROOT_PASSWORD: "{{ db_owncloud_pwd }}"
 
 - name: Ensure directory created
   file: path={{ item }} state=directory
@@ -44,5 +44,5 @@
       TIMEZONE: "Europe/Paris"
       SCHEDULE: "0 0 3 * *"
       BACKUP_METHOD: "mysqldump"
-      BACKUP_OPTS: "-u root -p {{ owncloud_db_pwd }} -h db-owncloud -d /var/backups/owncloud-db-backup.sql"
+      BACKUP_OPTS: "-u root -p {{ db_owncloud_pwd }} -h db-owncloud -d /var/backups/owncloud-db-backup.sql"
 

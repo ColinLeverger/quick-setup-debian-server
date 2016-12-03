@@ -6,3 +6,4 @@ roles/securisation/templates/*
 roles/seedbox/tasks/my_specialconfs.yml
 roles/seedbox/templates/*
 roles/ansible-role-java/
+update.retry

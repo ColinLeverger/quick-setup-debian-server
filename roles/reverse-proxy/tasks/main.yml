@@ -4,22 +4,22 @@
 # 1. Create folders
 - name: Create folder for reverse-proxy configuration
   file: 
-    path="/home/{{ username }}/reverse-proxy/"
+    path="/home/{{ user.name }}/reverse-proxy/"
     state=directory
 
 - name: Create folder for certs
   file: 
-    path="/home/{{ username }}/reverse-proxy/certs"
+    path="/home/{{ user.name }}/reverse-proxy/certs"
     state=directory
 
 - name: Create folder for htpasswd
   file: 
-    path="/home/{{ username }}/reverse-proxy/htpasswd"
+    path="/home/{{ user.name }}/reverse-proxy/htpasswd"
     state=directory
 
 - name: Create folder for vhosts configuration
   file: 
-    path="/home/{{ username }}/reverse-proxy/vhost.d"
+    path="/home/{{ user.name }}/reverse-proxy/vhost.d"
     state=directory
 
 # 2. Special configuration
@@ -39,9 +39,9 @@
     - "80:80"
     - "443:443"
     volumes:
-    - "/home/{{ username }}/reverse-proxy/certs:/etc/nginx/certs"
-    - "/home/{{ username }}/reverse-proxy/vhost.d:/etc/nginx/vhost.d:ro"
-    - "/home/{{ username }}/reverse-proxy/htpasswd:/etc/nginx/htpasswd:ro"
+    - "/home/{{ user.name }}/reverse-proxy/certs:/etc/nginx/certs"
+    - "/home/{{ user.name }}/reverse-proxy/vhost.d:/etc/nginx/vhost.d:ro"
+    - "/home/{{ user.name }}/reverse-proxy/htpasswd:/etc/nginx/htpasswd:ro"
     - "/var/run/docker.sock:/tmp/docker.sock:ro"
 
 

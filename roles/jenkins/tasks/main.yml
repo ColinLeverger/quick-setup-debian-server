@@ -1,7 +1,7 @@
 ---
 # tasks file for jenkins
 - name: Ensure that Jenkins_home exists
-  file: path=/home/jenkins_home state=directory owner={{ username }}
+  file: path=/home/jenkins_home state=directory owner={{ user.name }}
 
 # Note: this Jenkins is inside Docker but it has to have access to Docker itself
 # So, I mount docker inside docker. This is not good (security issues...), and Jenkins should thus be

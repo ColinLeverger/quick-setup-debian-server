@@ -6,23 +6,23 @@
 - name: Install sudo
   apt: name=sudo state=present
 
-- name: Add user {{ username }}
+- name: Add user {{ user.name }}
   user: 
-    name="{{ username }}"
+    name="{{ user.name }}"
     comment="Colin LEVERGER"
     state=present
-    password={{ pwd_user }}
+    password={{ user.pwd }}
     groups=sudo
     append=yes
 
-- name: Add {{ username }} sudo
-  command: adduser {{ username }} sudo
+- name: Add {{ user.name }} sudo
+  command: adduser {{ user.name }} sudo
 
-- name: Install .bashrc for {{ username }} user
+- name: Install .bashrc for {{ user.name }} user
   template: 
     src="templates/bashrc.j2"
-    dest="/home/{{ username }}/.bashrc"
-    owner={{ username }}
+    dest="/home/{{ user.name }}/.bashrc"
+    owner={{ user.name }}
     mode=777
 
 - name: Install fail2ban
@@ -36,18 +36,18 @@
 - name: Install rkhunter
   apt: name=rkhunter state=installed
 
-- name: Create folder for authorized_keys {{ username }}
+- name: Create folder for authorized_keys {{ user.name }}
   file: 
-    path="/home/{{ username }}/.ssh/"
+    path="/home/{{ user.name }}/.ssh/"
     state=directory
     mode=0755
 
 - name: Add authorized_keys file
   template: 
     src={{ my_key }}
-    dest="/home/{{ username }}/.ssh/authorized_keys"
-    owner="{{ username }}"
-    group="{{ username }}"
+    dest="/home/{{ user.name }}/.ssh/authorized_keys"
+    owner="{{ user.name }}"
+    group="{{ user.name }}"
 
 - name: Disallow password authentication
   lineinfile: 
@@ -67,11 +67,11 @@
   notify:
     - restart ssh
 
-- name: Allow only {{ username }} user to login
+- name: Allow only {{ user.name }} user to login
   lineinfile: 
     dest=/etc/ssh/sshd_config
     regexp="^AllowUsers"
-    line="AllowUsers {{ username }}"
+    line="AllowUsers {{ user.name }}"
     state=present
   notify:
     - restart ssh

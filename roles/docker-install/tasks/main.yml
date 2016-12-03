@@ -48,8 +48,8 @@
 - name: Add docker group
   group: name=docker state=present
 
-- name: Add {{ username }} to docker group
-  command: gpasswd -a {{ username }} docker
+- name: Add {{ user.name }} to docker group
+  command: gpasswd -a {{ user.name }} docker
   # notify:
   #   restart docker  #commented because do not want to break everything during tests
 

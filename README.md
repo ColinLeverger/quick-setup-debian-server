@@ -5,7 +5,7 @@ Ansible setup to configure a blank Debian 8 server automatically with only one c
 # Quick Start
 
 1. Customise variables in `./group_vars/all/vars_file.txt` and change extention of the file from `.txt` to `.yml`.
-2. Run `ansible-playbook -b --ask-sudo-pass main.yml -i hosts`.
+2. Run `make init` for first run of the script (on a blank server) or `make update` to update an already secured server.
 
 # Included in this Setup
 
@@ -39,7 +39,7 @@ Ansible setup to configure a blank Debian 8 server automatically with only one c
   * Change all the variables you need inside of this file,
   * Change the extension of the file from `.txt` to `.yml`.
 3. Create template files (SSL certs, htpasswd files, ...) needed to configure the different services (see next section for more explanations about the templates and files needed)
-4. Run the command `ansible-playbook -b --ask-sudo-pass main.yml -i hosts`; type the password you have configured in `./group_vars/all/vars_file.txt`
+4. Run the command `make (init|update)` (init for blank server, update for already secured server); type the password you have configured in `./group_vars/all/vars_file.txt`
 5. Grab a coffee, chill out... Because everything is done now - you only have to wait for the end of the execution. :)
 
 _Note: if for some reason, the deployment fails after the securisation of the server, you should comment the `- securisation` role. If you forget to do so, you will have an error (server unreachable) because root auth is disabled & SSH port is changed after the securisation!_
