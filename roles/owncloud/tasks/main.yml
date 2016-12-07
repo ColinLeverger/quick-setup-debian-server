@@ -1,12 +1,4 @@
 ---
-- name: Create docker owncloud mysql database
-  docker_container:
-    name: db-owncloud
-    image: mariadb
-    state: started
-    env:
-      MYSQL_ROOT_PASSWORD: "{{ db_owncloud_pwd }}"
-
 - name: Ensure directory created
   file: path={{ item }} state=directory
   with_items:
@@ -14,6 +6,24 @@
     - "/home/owncloud/apps"
     - "/home/owncloud/config"
     - "/home/owncloud/data"
+    - "/home/{{ user.name }}/backup"
+
+# Restore previous version of database if any.
+- name: Owncloud db configuration
+  template: 
+    src="templates/backup.sql.j2"
+    dest="/home/{{ user.name }}/backup/backup.sql"
+  ignore_errors: yes
+
+- name: Create docker owncloud mysql database
+  docker_container:
+    name: db-owncloud
+    image: mariadb
+    state: started
+    env:
+      MYSQL_ROOT_PASSWORD: "{{ db_owncloud_pwd }}"
+    volumes:
+      - "/home/{{ user.name }}/backup/:/docker-entrypoint-initdb.d/"
 
 - name: Create docker owncloud
   docker_container:
@@ -29,6 +39,7 @@
     env:
       VIRTUAL_HOST: "{{ hosts.owncloud }}"
 
+# Backup SQL database every hour.
 - name: Create the backup contener for database
   docker_container:
     name: owncloud-db-backup
@@ -42,7 +53,7 @@
       VIRTUAL_HOST: "{{ hosts.owncloud_backup }}"
       VIRTUAL_PORT: 18080
       TIMEZONE: "Europe/Paris"
-      SCHEDULE: "0 0 3 * *"
+      SCHEDULE: "30 * * * *"
       BACKUP_METHOD: "mysqldump"
       BACKUP_OPTS: "-u root -p {{ db_owncloud_pwd }} -h db-owncloud -d /var/backups/owncloud-db-backup.sql"
 
