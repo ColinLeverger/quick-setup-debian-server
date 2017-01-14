@@ -1,0 +1,11 @@
+---
+- name: Ensure curl is installed
+  apt:
+    name: curl
+    update_cache: yes
+
+- name: Cron to upload owncloud db backup to owncloud itself...
+  cron:
+    name: "upload owncloud db backup to owncloud"
+    minute: "0"
+    job: "curl -X PUT -u user:PASS-WORD-OWN-CLOU-D "https://yourowncloudurl.com/remote.php/webdav/owncloud-db-backup.sql" -F myfile=@"/rtorrent/finished/owncloud-db-backup.sql" --insecure"

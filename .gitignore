@@ -8,3 +8,4 @@ roles/seedbox/templates/*
 roles/ansible-role-java/
 update.retry
 roles/owncloud/templates/
+roles/owncloud/tasks/my_specialconfs.yml
