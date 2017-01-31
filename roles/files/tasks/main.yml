@@ -32,19 +32,35 @@
     - "/home/{{ user.name }}/file-streaming/h5ai-special.conf:/etc/nginx/sites-available/h5ai"
     - "/home/{{ user.name }}/file-streaming:/config"
     env:
-      VIRTUAL_HOST: "{{ hosts.files.first }}"
+      VIRTUAL_HOST: "{{ hosts.files.master }}"
       VIRTUAL_PORT: 443
       ALLOW_OVERRIDE: true
 
-- name: "{{ files.slave.first }} docker setup"
+- name: "{{ files.slaves.first }} docker setup"
   docker_container:
-    name: "{{ files.slave.first }}"
+    name: "{{ files.slaves.first }}"
     image: smdion/docker-h5ai
     state: started
     expose:
     - 443
     volumes:
     - "/rtorrent2/finished/:/var/www"
+    - "/home/{{ user.name }}/file-streaming/h5ai-special.conf:/etc/nginx/sites-available/h5ai"
+    - "/home/{{ user.name }}/file-streaming:/config"
+    env:
+      VIRTUAL_HOST: "{{ hosts.files.first }}"
+      VIRTUAL_PORT: 443
+      ALLOW_OVERRIDE: true
+
+- name: "{{ files.slaves.second }} docker setup"
+  docker_container:
+    name: "{{ files.slaves.second }}"
+    image: smdion/docker-h5ai
+    state: started
+    expose:
+    - 443
+    volumes:
+    - "/rtorrent3/finished/:/var/www"
     - "/home/{{ user.name }}/file-streaming/h5ai-special.conf:/etc/nginx/sites-available/h5ai"
     - "/home/{{ user.name }}/file-streaming:/config"
     env:
