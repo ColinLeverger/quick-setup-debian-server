@@ -3,24 +3,14 @@
 
 # 1. Create folders
 - name: Create folder for reverse-proxy configuration
-  file: 
-    path="/home/{{ user.name }}/reverse-proxy/"
+  file:
+    path="{{ item }}"
     state=directory
-
-- name: Create folder for certs
-  file: 
-    path="/home/{{ user.name }}/reverse-proxy/certs"
-    state=directory
-
-- name: Create folder for htpasswd
-  file: 
-    path="/home/{{ user.name }}/reverse-proxy/htpasswd"
-    state=directory
-
-- name: Create folder for vhosts configuration
-  file: 
-    path="/home/{{ user.name }}/reverse-proxy/vhost.d"
-    state=directory
+  with_items:
+    - "/home/{{ user.name }}/reverse-proxy/""
+    - "/home/{{ user.name }}/reverse-proxy/certs"
+    - "/home/{{ user.name }}/reverse-proxy/htpasswd"
+    - "/home/{{ user.name }}/reverse-proxy/vhost.d"
 
 # 2. Special configuration
 # Copy crt, configuration files, htpasswords... for each of the desired services
@@ -44,7 +34,23 @@
     - "/home/{{ user.name }}/reverse-proxy/htpasswd:/etc/nginx/htpasswd:ro"
     - "/var/run/docker.sock:/tmp/docker.sock:ro"
 
+- name: reverse-proxy letsencrypt companion setup
+  docker_container:
+    name: reverse-proxy
+    image: jwilder/nginx-proxy
+    state: started
+    ports:
+    - "80:80"
+    - "443:443"
+    volumes:
+    - "/home/{{ user.name }}/reverse-proxy/certs:/etc/nginx/certs"
+    - "/home/{{ user.name }}/reverse-proxy/vhost.d:/etc/nginx/vhost.d:ro"
+    - "/home/{{ user.name }}/reverse-proxy/htpasswd:/etc/nginx/htpasswd:ro"
+    - "/var/run/docker.sock:/tmp/docker.sock:ro"
 
 
-
-
+    docker run -d \
+    -v /path/to/certs:/etc/nginx/certs:rw \
+    --volumes-from nginx-proxy \
+    -v /var/run/docker.sock:/var/run/docker.sock:ro \
+    jrcs/letsencrypt-nginx-proxy-companion
