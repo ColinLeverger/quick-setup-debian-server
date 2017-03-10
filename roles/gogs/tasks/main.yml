@@ -5,7 +5,7 @@
 
 - name: Create docker mysql database
   docker_container:
-    name: db-gogs
+    name: gogs-db
     image: tutum/mysql
     state: started
     env:
@@ -19,7 +19,7 @@
     image: gogs/gogs
     state: started
     links:
-    - "db-gogs:db-gogs"
+    - "gogs-db:gogs-db"
     volumes:
     - "/home/gogs:/data"
     env:

@@ -15,8 +15,11 @@
 - name: Install unzip
   apt: name=unzip state=present
 
+- name: Install curl
+  apt: name=curl state=present
+
 - name: Install Python
-  apt: 
+  apt:
     name={{item}}
     state=present
   with_items:
