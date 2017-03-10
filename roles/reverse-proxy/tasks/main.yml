@@ -16,7 +16,6 @@
 # Copy crt, configuration files, htpasswords... for each of the desired services
 # The certs and htpassword should be already generated and are uploaded directly to the
 # host machine. Then you simply mount folders on the reverse-proxy docker contener.
-# FIXME: provide a template for my_specialconfs.yml
 - include: my_specialconfs.yml
 
 # 3. Docker contener
@@ -29,28 +28,19 @@
     - "80:80"
     - "443:443"
     volumes:
-    - "/home/{{ user.name }}/reverse-proxy/certs:/etc/nginx/certs"
+    - "/home/{{ user.name }}/reverse-proxy/certs:/etc/nginx/certs:ro"
     - "/home/{{ user.name }}/reverse-proxy/vhost.d:/etc/nginx/vhost.d:ro"
     - "/home/{{ user.name }}/reverse-proxy/htpasswd:/etc/nginx/htpasswd:ro"
+    - "/usr/share/nginx/html"
     - "/var/run/docker.sock:/tmp/docker.sock:ro"
 
 - name: reverse-proxy letsencrypt companion setup
   docker_container:
-    name: reverse-proxy
-    image: jwilder/nginx-proxy
+    name: reverse-proxy-companion
+    image: jrcs/letsencrypt-nginx-proxy-companion
     state: started
-    ports:
-    - "80:80"
-    - "443:443"
     volumes:
-    - "/home/{{ user.name }}/reverse-proxy/certs:/etc/nginx/certs"
-    - "/home/{{ user.name }}/reverse-proxy/vhost.d:/etc/nginx/vhost.d:ro"
-    - "/home/{{ user.name }}/reverse-proxy/htpasswd:/etc/nginx/htpasswd:ro"
+    - "/home/{{ user.name }}/reverse-proxy/certs:/etc/nginx/certs:rw"
     - "/var/run/docker.sock:/tmp/docker.sock:ro"
-
-
-    docker run -d \
-    -v /path/to/certs:/etc/nginx/certs:rw \
-    --volumes-from nginx-proxy \
-    -v /var/run/docker.sock:/var/run/docker.sock:ro \
-    jrcs/letsencrypt-nginx-proxy-companion
+    volumes-from:
+    - reverse-proxy

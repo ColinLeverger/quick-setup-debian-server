@@ -32,6 +32,8 @@
     links:
     - "owncloud-db:owncloud-db"
     state: started
+    expose:
+      - "80:80"
     volumes:
     - "/home/owncloud/apps:/var/www/html/apps"
     - "/home/owncloud/config:/var/www/html/config"
