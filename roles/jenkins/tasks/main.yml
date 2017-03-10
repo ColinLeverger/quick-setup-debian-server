@@ -9,11 +9,11 @@
 # FIXME
 - name: Jenkins docker setup
   docker_container:
-    name: myjenkins
+    name: jenkins
     image: jenkins
     state: started
     privileged: yes
-    volumes:      
+    volumes:
     - "/home/jenkins_home:/var/jenkins_home"
     # - "/usr/lib/x86_64-linux-gnu/libapparmor.so.1:/usr/lib/x86_64-linux-gnu/libapparmor.so.1"
     # - "/usr/bin/docker_container:/bin/docker"

@@ -6,31 +6,31 @@
     - "/home/owncloud/apps"
     - "/home/owncloud/config"
     - "/home/owncloud/data"
-    - "/home/{{ user.name }}/backup"
+    - "/tmp/backup/"
 
 # Restore previous version of database if any.
-- name: Owncloud db configuration
-  template: 
+- name: ownCloud db configuration
+  template:
     src="templates/backup.sql.j2"
-    dest="/home/{{ user.name }}/backup/backup.sql"
+    dest="/tmp/backup/backupOwncloud.sql"
   ignore_errors: yes
 
-- name: Create docker owncloud mysql database
+- name: Create docker ownCloud mysql database
   docker_container:
-    name: db-owncloud
+    name: owncloud-db
     image: mariadb
     state: started
     env:
-      MYSQL_ROOT_PASSWORD: "{{ db_owncloud_pwd }}"
+      MYSQL_ROOT_PASSWORD: "{{ owncloud_db_pwd }}"
     volumes:
-      - "/home/{{ user.name }}/backup/:/docker-entrypoint-initdb.d/"
+      - "/tmp/backup/:/docker-entrypoint-initdb.d/"
 
-- name: Create docker owncloud
+- name: Create docker ownCloud
   docker_container:
     name: owncloud
     image: owncloud
     links:
-    - "db-owncloud:db-owncloud"
+    - "owncloud-db:owncloud-db"
     state: started
     volumes:
     - "/home/owncloud/apps:/var/www/html/apps"
@@ -45,7 +45,7 @@
     name: owncloud-db-backup
     image: hauptmedia/mariadb-backup
     links:
-      - "db-owncloud:db-owncloud"
+      - "owncloud-db:owncloud-db"
     state: started
     volumes:
       - "/rtorrent/finished/:/var/backups"
@@ -55,8 +55,7 @@
       TIMEZONE: "Europe/Paris"
       SCHEDULE: "30 * * * *"
       BACKUP_METHOD: "mysqldump"
-      BACKUP_OPTS: "-u root -p {{ db_owncloud_pwd }} -h db-owncloud -d /var/backups/owncloud-db-backup.sql"
+      BACKUP_OPTS: "-u root -p {{ owncloud_db_pwd }} -h owncloud-db -d /var/backups/owncloud-db-backup.sql"
 
 # Include special conf to upload the backups created by the docker contener in owncloud itself :-)
-- include: my_specialconfs.yml 
-
+- include: my_specialconfs.yml

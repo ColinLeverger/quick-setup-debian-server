@@ -14,27 +14,27 @@ my_key: /Users/your_local_user/.ssh/id_rsa.pub
 
 # License & pwd
 license_newrelic: your_license
-db_owncloud_pwd: your_password
+owncloud_db_pwd: your_password
 
 # Rtorrent
 seedbox_master:
   name: master
-  ports: 
+  ports:
     dl: "45566:45566"
     up: "9527:9527/udp"
 
 # Here there is only one slave ("first") but you can add as many as you want.
 seedbox_slaves:
-  names: 
+  names:
     first: first-slave
-  ports: 
+  ports:
     first: "1369:9527/udp"
 
 
 # Files download
 files:
   master: file-master
-  slave: 
+  slave:
     first: file-slave-1
 
 # Hostnames
@@ -48,6 +48,6 @@ hosts:
   owncloud: your-url.com
   owncloud_backup: your-url.com
   seedbox_master: your-url.com
-  seedbox_slaves: 
+  seedbox_slaves:
     first: your-url.com
   php: your-url.com

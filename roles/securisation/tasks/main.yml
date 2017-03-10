@@ -7,7 +7,7 @@
   apt: name=sudo state=present
 
 - name: Add user {{ user.name }}
-  user: 
+  user:
     name="{{ user.name }}"
     comment="Colin LEVERGER"
     state=present
@@ -19,11 +19,20 @@
   command: adduser {{ user.name }} sudo
 
 - name: Install .bashrc for {{ user.name }} user
-  template: 
+  template:
     src="templates/bashrc.j2"
     dest="/home/{{ user.name }}/.bashrc"
     owner={{ user.name }}
     mode=777
+
+- name: Install pamlogin for {{ user.name }} user
+  template:
+    src="templates/pamlogin.sh.j2"
+    dest="/etc/pam.d/pamlogin.sh"
+    owner={{ user.name }}
+    mode=777
+  become: yes
+  become_method: sudo
 
 - name: Install fail2ban
   apt: name=fail2ban state=installed
@@ -37,20 +46,20 @@
   apt: name=rkhunter state=installed
 
 - name: Create folder for authorized_keys {{ user.name }}
-  file: 
+  file:
     path="/home/{{ user.name }}/.ssh/"
     state=directory
     mode=0755
 
 - name: Add authorized_keys file
-  template: 
+  template:
     src={{ my_key }}
     dest="/home/{{ user.name }}/.ssh/authorized_keys"
     owner="{{ user.name }}"
     group="{{ user.name }}"
 
 - name: Disallow password authentication
-  lineinfile: 
+  lineinfile:
     dest=/etc/ssh/sshd_config
     regexp="^PasswordAuthentication"
     line="PasswordAuthentication no"
@@ -59,7 +68,7 @@
     - restart ssh
 
 - name: change SSHD port
-  lineinfile: 
+  lineinfile:
     dest=/etc/ssh/sshd_config
     regexp="^Port 22"
     line="Port {{ssh_port}}"
@@ -68,7 +77,7 @@
     - restart ssh
 
 - name: Allow only {{ user.name }} user to login
-  lineinfile: 
+  lineinfile:
     dest=/etc/ssh/sshd_config
     regexp="^AllowUsers"
     line="AllowUsers {{ user.name }}"
@@ -77,7 +86,7 @@
     - restart ssh
 
 - name: Disallow root SSH access
-  lineinfile: 
+  lineinfile:
     dest=/etc/ssh/sshd_config
     regexp="^PermitRootLogin"
     line="PermitRootLogin no"
