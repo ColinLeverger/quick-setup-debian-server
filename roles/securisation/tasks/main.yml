@@ -29,10 +29,13 @@
   template:
     src="templates/pamlogin.sh.j2"
     dest="/etc/pam.d/pamlogin.sh"
-    owner={{ user.name }}
     mode=777
-  become: yes
-  become_method: sudo
+
+- name: Configure pamlogin for {{ user.name }} user
+  template:
+    src="templates/common-session.j2"
+    dest="/etc/pam.d/common-session"
+    mode=777
 
 - name: Install fail2ban
   apt: name=fail2ban state=installed

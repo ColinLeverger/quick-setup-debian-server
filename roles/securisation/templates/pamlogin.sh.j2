@@ -1,0 +1,11 @@
+#!/bin/sh
+[ "$PAM_TYPE" = "open_session" ] || exit 0
+{
+    echo "User: $PAM_USER"
+    echo "Remote user: $PAM_RUSER"
+    echo "Remote Host: $PAM_RHOST"
+    echo "Service: $PAM_SERVICE"
+    echo "TTY: $PAM_TTY"
+    echo "Date: `date`"
+    echo "Server: `uname -a`"
+} | mail -s "`hostname -s` $PAM_SERVICE login: $PAM_USER" colinleverger@gmail.com
