@@ -1,0 +1,4 @@
+---
+- hosts: root
+  roles:
+    - securisation

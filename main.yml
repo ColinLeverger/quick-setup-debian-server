@@ -1,12 +1,8 @@
 ---
-- hosts: root
-  roles:
-    - securisation
-
 - hosts: user
   roles:
     - basic-services
-    # - newrelic
+    - newrelic
     - docker-install
     - reverse-proxy
     - srv-voeux
