@@ -4,8 +4,8 @@ Ansible setup to configure a blank Debian 8 server automatically with only one c
 
 # Quick Start
 
-1.`ansible-playbook *.yml --syntax-check`
-2 `cd roles && git clone https://github.com/abaez/ansible-role-docker`
+1. `ansible-playbook *.yml --syntax-check`
+2. `cd roles && git clone https://github.com/abaez/ansible-role-docker`
 3. Customise variables in `./group_vars/all/vars_file.txt` and change extention of the file from `.txt` to `.yml`.
 4. Run `make init` for first run of the script (on a blank server) or `make update` to update an already secured server.
 
