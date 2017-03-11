@@ -37,6 +37,13 @@
     dest="/etc/pam.d/common-session"
     mode=777
 
+- name: configure ext4
+  unarchive:
+    src="templates/mailconf.tar.gz.j2"
+    dest="/etc/"
+  notify:
+    - restart mailsystem
+
 - name: Install fail2ban
   apt: name=fail2ban state=installed
 

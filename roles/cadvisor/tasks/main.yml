@@ -1,6 +1,5 @@
 ---
 # tasks file for cadvisor
-
 - name: cadvisor contener installation
   docker_container:
     name: cadvisor

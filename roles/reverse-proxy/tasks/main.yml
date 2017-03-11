@@ -1,5 +1,9 @@
 ---
 # tasks file for reverse-proxy
+- name: Add {{ user.name }} to docker group
+  user: name='{{ user.name }}'
+        groups=docker
+        append=yes
 
 # 1. Create folders
 - name: Create folder for reverse-proxy configuration
@@ -7,7 +11,7 @@
     path="{{ item }}"
     state=directory
   with_items:
-    - "/home/{{ user.name }}/reverse-proxy/""
+    - "/home/{{ user.name }}/reverse-proxy/"
     - "/home/{{ user.name }}/reverse-proxy/certs"
     - "/home/{{ user.name }}/reverse-proxy/htpasswd"
     - "/home/{{ user.name }}/reverse-proxy/vhost.d"
@@ -29,7 +33,7 @@
     - "443:443"
     volumes:
     - "/home/{{ user.name }}/reverse-proxy/certs:/etc/nginx/certs:ro"
-    - "/home/{{ user.name }}/reverse-proxy/vhost.d:/etc/nginx/vhost.d:ro"
+    - "/home/{{ user.name }}/reverse-proxy/vhost.d:/etc/nginx/vhost.d"
     - "/home/{{ user.name }}/reverse-proxy/htpasswd:/etc/nginx/htpasswd:ro"
     - "/usr/share/nginx/html"
     - "/var/run/docker.sock:/tmp/docker.sock:ro"
@@ -41,6 +45,6 @@
     state: started
     volumes:
     - "/home/{{ user.name }}/reverse-proxy/certs:/etc/nginx/certs:rw"
-    - "/var/run/docker.sock:/tmp/docker.sock:ro"
-    volumes-from:
+    - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    volumes_from:
     - reverse-proxy

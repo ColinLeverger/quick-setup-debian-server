@@ -18,6 +18,12 @@
 - name: Install curl
   apt: name=curl state=present
 
+- name: Install apt tools
+  apt: name={{item}} state=present
+  with_items:
+    - software-properties-common
+    - python-software-properties
+
 - name: Install Python
   apt:
     name={{item}}

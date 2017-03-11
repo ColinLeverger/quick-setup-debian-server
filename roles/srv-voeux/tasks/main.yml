@@ -20,6 +20,7 @@
     name:  "{{item.name}}"
     image: "{{item.image}}"
     state: absent
+    force_kill: yes
   with_items:
     - {name: 'db-srv-php-voeux', image: 'tutum/mysql'}
     - {name: 'apache2-srv-php-voeux', image: 'tutum/apache-php'}
@@ -53,3 +54,5 @@
     env:
       ALLOW_OVERRIDE: true
       VIRTUAL_HOST: "{{ hosts.php }}"
+      LETSENCRYPT_HOST: "{{ hosts.php }}"
+      LETSENCRYPT_EMAIL: "colin@colinleverger.fr"

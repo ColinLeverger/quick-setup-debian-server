@@ -1,7 +1,7 @@
 ---
 # tasks file for gogs
 - name: Ensure that gogs home exists
-  file: path=/home/gogs state=directory
+  file: path=/home/gogs state=directory owner={{ user.name }} group={{ user.name }} recurse=yes
 
 - name: Create docker mysql database
   docker_container:
@@ -25,3 +25,12 @@
     env:
       VIRTUAL_PORT: 3000
       VIRTUAL_HOST: "{{ hosts.gogs }}"
+      LETSENCRYPT_HOST: "{{ hosts.gogs }}"
+      LETSENCRYPT_EMAIL: "colin@colinleverger.fr"
+
+- name: Cron backup gogs home
+  cron:
+    name: "backup gogs home"
+    minute: "0"
+    hour: "2"
+    job: "tar czf /rtorrent/finished/gogs.tar.gz /home/gogs/"

@@ -4,8 +4,10 @@ Ansible setup to configure a blank Debian 8 server automatically with only one c
 
 # Quick Start
 
-1. Customise variables in `./group_vars/all/vars_file.txt` and change extention of the file from `.txt` to `.yml`.
-2. Run `make init` for first run of the script (on a blank server) or `make update` to update an already secured server.
+1.`ansible-playbook *.yml --syntax-check`
+2 `cd roles && git clone https://github.com/abaez/ansible-role-docker`
+3. Customise variables in `./group_vars/all/vars_file.txt` and change extention of the file from `.txt` to `.yml`.
+4. Run `make init` for first run of the script (on a blank server) or `make update` to update an already secured server.
 
 # Included in this Setup
 
@@ -59,9 +61,9 @@ If this utility is not installed on your system then you can still easily genera
 
 It is possible to run multiple seedbox on the same server. If you want to do so, a `rtorrent` will be used as a master and this master can have several slaves.
 
-That is why there is two Ansible variable dictionaries: one for `seedbox_master` and one for `seedbox_slave`. 
+That is why there is two Ansible variable dictionaries: one for `seedbox_master` and one for `seedbox_slave`.
 
-* `ports` are the ports you need to expose to make the service run 
+* `ports` are the ports you need to expose to make the service run
 * `name[s]` are the names of the docker containers.
 
 Further information concerning the customisation of the seedboxes can be found at the following address, see: https://github.com/kfei/docktorrent
@@ -104,7 +106,4 @@ This folder contains the htpasswd files needed in previous step.
 - Improve workaround for having multiple seedboxes on the same host: using screens is not a brilliant solution, and I am really interested in something prettier (maybe customizing the `Dockerfile` of rtorrent?),
 - Write tests.
 
-If you find bugs & improvements, feel free to submit an issue, fork this project and send pull requests! :) 
-
-
-
+If you find bugs & improvements, feel free to submit an issue, fork this project and send pull requests! :)

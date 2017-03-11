@@ -3,7 +3,7 @@
   roles:
     - basic-services
     - newrelic
-    - abaez.docker
+    - ansible-role-docker
     - reverse-proxy
     - srv-voeux
     - seedbox

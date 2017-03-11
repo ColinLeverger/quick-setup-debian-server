@@ -1,9 +1,4 @@
 ---
-- name: Ensure curl is installed
-  apt:
-    name: curl
-    update_cache: yes
-
 - name: Cron to upload owncloud db backup to owncloud itself...
   cron:
     name: "upload owncloud db backup to owncloud"

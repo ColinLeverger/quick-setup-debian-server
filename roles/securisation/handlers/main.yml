@@ -5,3 +5,15 @@
 
 - name: restart fail2ban
   service: name=fail2ban state=restarted
+
+# TESTME 11/03/17
+- name: restart mailsystem
+  command: update-exim4.conf
+  notify: restart mailsystem step 2
+
+- name: restart mailsystem step 2
+  command: invoke-rc.d exim4 restart
+  notify: restart mailsystem step 3
+
+- name: restart mailsystem step 3
+  command: exim4 -qff

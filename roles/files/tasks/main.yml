@@ -73,3 +73,21 @@
       LETSENCRYPT_EMAIL: "colin@colinleverger.fr"
       VIRTUAL_PORT: 443
       ALLOW_OVERRIDE: true
+
+- name: "{{ files.slaves.third }} docker setup"
+  docker_container:
+    name: "{{ files.slaves.third }}"
+    image: smdion/docker-h5ai
+    state: started
+    expose:
+    - 443
+    volumes:
+    - "/rtorrent4/finished/:/var/www"
+    - "/home/{{ user.name }}/file-streaming/h5ai-special.conf:/etc/nginx/sites-available/h5ai"
+    - "/home/{{ user.name }}/file-streaming:/config"
+    env:
+      VIRTUAL_HOST: "{{ hosts.files.third }}"
+      LETSENCRYPT_HOST: "{{ hosts.files.third }}"
+      LETSENCRYPT_EMAIL: "colin@colinleverger.fr"
+      VIRTUAL_PORT: 443
+      ALLOW_OVERRIDE: true
