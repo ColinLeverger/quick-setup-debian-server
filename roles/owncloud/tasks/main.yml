@@ -41,7 +41,7 @@
     env:
       VIRTUAL_HOST: "{{ hosts.owncloud }}"
       LETSENCRYPT_HOST: "{{ hosts.owncloud }}"
-      LETSENCRYPT_EMAIL: "colin@colinleverger.fr"
+      LETSENCRYPT_EMAIL: "{{ letsencrypt.email }}"
 
 # Backup SQL database every hour.
 - name: Create the backup contener for database

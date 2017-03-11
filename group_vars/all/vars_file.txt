@@ -12,6 +12,9 @@ ssh_port: 1234
 ip: 192.168.0.1
 my_key: /Users/your_local_user/.ssh/id_rsa.pub
 
+letsencrypt:
+  email: foo@bar.com
+
 # License & pwd
 license_newrelic: your_license
 owncloud_db_pwd: your_password

@@ -55,4 +55,4 @@
       ALLOW_OVERRIDE: true
       VIRTUAL_HOST: "{{ hosts.php }}"
       LETSENCRYPT_HOST: "{{ hosts.php }}"
-      LETSENCRYPT_EMAIL: "colin@colinleverger.fr"
+      LETSENCRYPT_EMAIL: "{{ letsencrypt.email }}"

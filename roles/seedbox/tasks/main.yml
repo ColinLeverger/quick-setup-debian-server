@@ -74,7 +74,7 @@
   -e VIRTUAL_HOST={{ hosts.seedbox_master }} \
   -e UPLOAD_RATE=0 \
   -e LETSENCRYPT_HOST={{ hosts.seedbox_master }} \
-  -e LETSENCRYPT_EMAIL=colin@colinleverger.fr \
+  -e LETSENCRYPT_EMAIL={{ letsencrypt.email }} \
   --name {{ seedbox_master.name }} \
   kfei/docktorrent'"
   become: yes
@@ -100,7 +100,7 @@
   -e VIRTUAL_HOST={{ hosts.seedbox_slaves.first }} \
   -e UPLOAD_RATE=0 \
   -e LETSENCRYPT_HOST={{ hosts.seedbox_slaves.first }} \
-  -e LETSENCRYPT_EMAIL=colin@colinleverger.fr \
+  -e LETSENCRYPT_EMAIL={{ letsencrypt.email }} \
   --name {{ seedbox_slaves.names.first }} \
   kfei/docktorrent'"
   become: yes
@@ -126,7 +126,7 @@
   -e VIRTUAL_HOST={{ hosts.seedbox_slaves.second }} \
   -e UPLOAD_RATE=0 \
   -e LETSENCRYPT_HOST={{ hosts.seedbox_slaves.second }} \
-  -e LETSENCRYPT_EMAIL=colin@colinleverger.fr \
+  -e LETSENCRYPT_EMAIL={{ letsencrypt.email }} \
   --name {{ seedbox_slaves.names.second }} \
   kfei/docktorrent'"
   become: yes
@@ -152,7 +152,7 @@
   -e VIRTUAL_HOST={{ hosts.seedbox_slaves.third }} \
   -e UPLOAD_RATE=0 \
   -e LETSENCRYPT_HOST={{ hosts.seedbox_slaves.third }} \
-  -e LETSENCRYPT_EMAIL=colin@colinleverger.fr \
+  -e LETSENCRYPT_EMAIL={{ letsencrypt.email }} \
   --name {{ seedbox_slaves.names.third }} \
   kfei/docktorrent'"
   become: yes

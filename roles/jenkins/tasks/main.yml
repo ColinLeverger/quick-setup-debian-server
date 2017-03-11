@@ -24,7 +24,7 @@
       VIRTUAL_PORT: 8080
       VIRTUAL_HOST: "{{ hosts.jenkins }}"
       LETSENCRYPT_HOST: "{{ hosts.jenkins }}"
-      LETSENCRYPT_EMAIL: "colin@colinleverger.fr"
+      LETSENCRYPT_EMAIL: "{{ letsencrypt.email }}"
 
 
 - name: Cron backup jenkins home

@@ -26,7 +26,7 @@
       VIRTUAL_PORT: 3000
       VIRTUAL_HOST: "{{ hosts.gogs }}"
       LETSENCRYPT_HOST: "{{ hosts.gogs }}"
-      LETSENCRYPT_EMAIL: "colin@colinleverger.fr"
+      LETSENCRYPT_EMAIL: "{{ letsencrypt.email }}"
 
 - name: Cron backup gogs home
   cron:
