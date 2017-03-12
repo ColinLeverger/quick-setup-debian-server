@@ -1,0 +1,4 @@
+---
+# handlers file for elk
+- name: restart rsyslog
+  service: name=rsyslog state=restarted

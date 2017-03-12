@@ -1,0 +1,60 @@
+---
+# tasks file for elk
+- name: Ensure that directories needed exist
+  file:
+    path="{{ item }}"
+    state=directory
+  with_items:
+    - "/home/elasticsearch"
+    - "/home/logstash"
+    - "/home/logstash/pipeline"
+    - "/home/kibana"
+
+- name: Ensure that configuration files are copied in the good paths
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  with_items:
+    - { src: 'templates/syslog.conf.j2', dest: '/home/logstash/pipeline/syslog.conf' }
+    - { src: 'templates/rsyslog.conf.j2', dest: '/etc/rsyslog.d/10-logstash.conf' }
+    - { src: 'templates/kibana.yml.j2', dest: '/home/kibana/kibana.yml' }
+  notify:
+    - restart rsyslog
+
+# 1. Elasticsearch
+- name: Create docker contener for elasticsearch
+  docker_container:
+    name: elasticsearch
+    image: elasticsearch
+    state: started
+    volumes:
+      - "/home/elasticsearch:/usr/share/elasticsearch/data"
+
+# 2. logstash
+- name: Create docker contener for logstash
+  docker_container:
+    name: logstash
+    image: docker.elastic.co/logstash/logstash:5.2.2
+    state: started
+    volumes:
+      - "/home/logstash/pipeline/:/usr/share/logstash/pipeline/"
+    expose:
+      - 25826
+    ports:
+      - "25826:25826"
+      - "25826:25826/udp"
+    links:
+      - "elasticsearch:elasticsearch"
+
+# 3. Kibana
+- name: Create docker contener for kibana
+  docker_container:
+    name: kibana
+    image: kibana
+    state: started
+    ports:
+      - "44554:5601"
+    volumes:
+      - "/home/kibana/kibana.yml:/usr/share/kibana/config/kibana.yml"
+    links:
+      - "elasticsearch:elasticsearch"

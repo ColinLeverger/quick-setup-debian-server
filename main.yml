@@ -12,6 +12,7 @@
     - gogs
     - cadvisor
     - owncloud
-
+    - elk
+    
 # Run the following command to launch the playbook and roles.
 # ansible-playbook -b --ask-sudo-pass main.yml -i hosts

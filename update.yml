@@ -10,4 +10,5 @@
     # - jenkins
     # - gogs
     # - cadvisor
-    - owncloud
+    # - owncloud
+    - elk
