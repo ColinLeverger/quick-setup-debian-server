@@ -2,3 +2,8 @@
 # handlers file for elk
 - name: restart rsyslog
   service: name=rsyslog state=restarted
+
+- name: reload sysctl.conf
+  command: sysctl --system
+  become: yes
+  become_method: sudo

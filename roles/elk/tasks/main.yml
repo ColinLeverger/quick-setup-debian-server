@@ -5,27 +5,46 @@
     path="{{ item }}"
     state=directory
   with_items:
-    - "/home/elasticsearch"
     - "/home/logstash"
     - "/home/logstash/pipeline"
     - "/home/kibana"
+
+- name: Ensure that elasticsearch directory is writtable/readable by elasticsearch
+  file:
+    path="{{ item }}"
+    state=directory
+    mode=777
+    recurse=yes
+  with_items:
+    - "/home/elasticsearch"
 
 - name: Ensure that configuration files are copied in the good paths
   template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
   with_items:
-    - { src: 'templates/syslog.conf.j2', dest: '/home/logstash/pipeline/syslog.conf' }
-    - { src: 'templates/rsyslog.conf.j2', dest: '/etc/rsyslog.d/10-logstash.conf' }
+    - { src: 'templates/logstash.conf.j2', dest: '/home/logstash/pipeline/logstash.conf' }
+    - { src: 'templates/10-logstash.conf.j2', dest: '/etc/rsyslog.d/10-logstash.conf' }
+    - { src: 'templates/01-json-template.conf.j2', dest: '/etc/rsyslog.d/01-json-template.conf' }
     - { src: 'templates/kibana.yml.j2', dest: '/home/kibana/kibana.yml' }
   notify:
     - restart rsyslog
 
 # 1. Elasticsearch
+- name: Configure vm.max_map_count in host
+  lineinfile:
+    dest=/etc/sysctl.conf
+    line='vm.max_map_count=262144'
+    state=present
+  become: yes
+  become_method: sudo
+  notify:
+    - reload sysctl.conf
+
 - name: Create docker contener for elasticsearch
   docker_container:
     name: elasticsearch
-    image: elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.2.2
     state: started
     volumes:
       - "/home/elasticsearch:/usr/share/elasticsearch/data"
@@ -50,7 +69,7 @@
 - name: Create docker contener for kibana
   docker_container:
     name: kibana
-    image: kibana
+    image: docker.elastic.co/kibana/kibana:5.2.2
     state: started
     ports:
       - "44554:5601"
