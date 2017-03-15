@@ -3,6 +3,13 @@
 - name: Ensure that gogs home exists
   file: path=/home/gogs state=directory owner={{ user.name }} group={{ user.name }} recurse=yes
 
+- name: Copy conf file
+  template:
+    src="templates/app.ini.j2"
+    dest="/home/gogs/gogs/conf/app.ini"
+    owner={{ user.name }}
+    group={{ user.name }}
+
 - name: Create docker mysql database
   docker_container:
     name: gogs-db

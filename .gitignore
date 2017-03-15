@@ -11,3 +11,4 @@ roles/owncloud/templates/
 roles/owncloud/tasks/my_specialconfs.yml
 roles/ansible-role-docker/
 roles/securisation/templates/mailconf.tar.gz.j2
+roles/gogs/templates/
