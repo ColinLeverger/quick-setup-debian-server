@@ -3,10 +3,10 @@
     # - basic-services
     # # - newrelic
     # - docker-install
-    # - reverse-proxy
+    - reverse-proxy
     # - srv-voeux
     # - seedbox
-    - files
+    # - files
     # - jenkins
     # - gogs
     # - cadvisor
