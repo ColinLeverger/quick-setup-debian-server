@@ -25,8 +25,6 @@
     name: "{{ files.master }}"
     image: smdion/docker-h5ai
     state: started
-    expose:
-    - 443
     volumes:
     - "/rtorrent/finished/:/var/www"
     - "/home/{{ user.name }}/file-streaming/h5ai-special.conf:/etc/nginx/sites-available/h5ai"
@@ -35,7 +33,6 @@
       VIRTUAL_HOST: "{{ hosts.files.master }}"
       LETSENCRYPT_HOST: "{{ hosts.files.master }}"
       LETSENCRYPT_EMAIL: "{{ letsencrypt.email }}"
-      VIRTUAL_PORT: 443
       ALLOW_OVERRIDE: true
 
 - name: "{{ files.slaves.first }} docker setup"
@@ -43,8 +40,6 @@
     name: "{{ files.slaves.first }}"
     image: smdion/docker-h5ai
     state: started
-    expose:
-    - 443
     volumes:
     - "/rtorrent2/finished/:/var/www"
     - "/home/{{ user.name }}/file-streaming/h5ai-special.conf:/etc/nginx/sites-available/h5ai"
@@ -53,7 +48,6 @@
       VIRTUAL_HOST: "{{ hosts.files.first }}"
       LETSENCRYPT_HOST: "{{ hosts.files.first }}"
       LETSENCRYPT_EMAIL: "{{ letsencrypt.email }}"
-      VIRTUAL_PORT: 443
       ALLOW_OVERRIDE: true
 
 - name: "{{ files.slaves.second }} docker setup"
@@ -61,8 +55,6 @@
     name: "{{ files.slaves.second }}"
     image: smdion/docker-h5ai
     state: started
-    expose:
-    - 443
     volumes:
     - "/rtorrent3/finished/:/var/www"
     - "/home/{{ user.name }}/file-streaming/h5ai-special.conf:/etc/nginx/sites-available/h5ai"
@@ -71,7 +63,6 @@
       VIRTUAL_HOST: "{{ hosts.files.second }}"
       LETSENCRYPT_HOST: "{{ hosts.files.second }}"
       LETSENCRYPT_EMAIL: "{{ letsencrypt.email }}"
-      VIRTUAL_PORT: 443
       ALLOW_OVERRIDE: true
 
 - name: "{{ files.slaves.third }} docker setup"
@@ -79,8 +70,6 @@
     name: "{{ files.slaves.third }}"
     image: smdion/docker-h5ai
     state: started
-    expose:
-    - 443
     volumes:
     - "/rtorrent4/finished/:/var/www"
     - "/home/{{ user.name }}/file-streaming/h5ai-special.conf:/etc/nginx/sites-available/h5ai"
@@ -89,5 +78,4 @@
       VIRTUAL_HOST: "{{ hosts.files.third }}"
       LETSENCRYPT_HOST: "{{ hosts.files.third }}"
       LETSENCRYPT_EMAIL: "{{ letsencrypt.email }}"
-      VIRTUAL_PORT: 443
       ALLOW_OVERRIDE: true

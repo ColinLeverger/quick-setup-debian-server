@@ -1,5 +1,5 @@
 server {
-        listen 443;
+        listen 80;
 
         root /var/www;
 
@@ -10,13 +10,13 @@ server {
         location /_h5ai/ {
                 root /usr/share/h5ai/;
 
-                auth_basic "Administrator Login";                                            
-                auth_basic_user_file /var/www/.htpasswd;                                     
-                                                                                             
-                location /_h5ai/server/php/index.php {                                       
-                        fastcgi_pass unix:/var/run/php5-fpm.sock;                            
-                        include fastcgi_params;                                              
-                }                                                                            
-                location ~ /\. { deny  all; }                                                
-        }                                                                            
+                auth_basic "Administrator Login";
+                auth_basic_user_file /var/www/.htpasswd;
+
+                location /_h5ai/server/php/index.php {
+                        fastcgi_pass unix:/var/run/php5-fpm.sock;
+                        include fastcgi_params;
+                }
+                location ~ /\. { deny  all; }
+        }
 }

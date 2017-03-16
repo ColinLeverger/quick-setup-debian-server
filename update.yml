@@ -6,8 +6,8 @@
     # - reverse-proxy
     # - srv-voeux
     # - seedbox
-    # - files
+    - files
     # - jenkins
     # - gogs
     # - cadvisor
-    - owncloud
+    # - owncloud
