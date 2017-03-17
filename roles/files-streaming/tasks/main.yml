@@ -1,34 +1,25 @@
 ---
 # tasks file for file-streaming
 - name: Create special conf folder for file streaming
-  file:
-    path="/home/{{ user.name }}/file-streaming/"
-    state=directory
-    mode=777
+  file: path="/home/{{ user.name }}/file-streaming/" state=directory
 
-- name: Special conf for server
+- name: Special conf for h5ai
   template:
-    src="templates/h5ai-special.conf.j2"
-    dest="/home/{{ user.name }}/file-streaming/h5ai-special.conf"
-    owner=root
-    mode=777
-
-- name: Special conf for file streaming
-  template:
-    src="templates/options.json.j2"
-    dest="/home/{{ user.name }}/file-streaming/options.json"
-    owner=root
-    mode=777
+    src="templates/{{ item }}.j2"
+    dest="/home/{{ user.name }}/file-streaming/{{ item }}"
+  with_items:
+    - h5ai-special.conf
+    - options.json
 
 - name: "{{ files.master }} docker setup"
   docker_container:
     name: "{{ files.master }}"
-    image: clue/docker-h5ai
+    image: clue/h5ai
     state: started
     volumes:
     - "/rtorrent/finished/:/var/www"
     - "/home/{{ user.name }}/file-streaming/h5ai-special.conf:/etc/nginx/sites-available/h5ai"
-    - "/home/{{ user.name }}/file-streaming:/config"
+    - "/home/{{ user.name }}/file-streaming/options.json:/usr/share/h5ai/_h5ai/conf/options.json"
     env:
       VIRTUAL_HOST: "{{ hosts.files.master }}"
       LETSENCRYPT_HOST: "{{ hosts.files.master }}"
@@ -38,12 +29,12 @@
 - name: "{{ files.slaves.first }} docker setup"
   docker_container:
     name: "{{ files.slaves.first }}"
-    image: clue/docker-h5ai
+    image: clue/h5ai
     state: started
     volumes:
     - "/rtorrent2/finished/:/var/www"
     - "/home/{{ user.name }}/file-streaming/h5ai-special.conf:/etc/nginx/sites-available/h5ai"
-    - "/home/{{ user.name }}/file-streaming:/config"
+    - "/home/{{ user.name }}/file-streaming/options.json:/usr/share/h5ai/_h5ai/conf/options.json"
     env:
       VIRTUAL_HOST: "{{ hosts.files.first }}"
       LETSENCRYPT_HOST: "{{ hosts.files.first }}"
@@ -53,12 +44,12 @@
 - name: "{{ files.slaves.second }} docker setup"
   docker_container:
     name: "{{ files.slaves.second }}"
-    image: clue/docker-h5ai
+    image: clue/h5ai
     state: started
     volumes:
     - "/rtorrent3/finished/:/var/www"
     - "/home/{{ user.name }}/file-streaming/h5ai-special.conf:/etc/nginx/sites-available/h5ai"
-    - "/home/{{ user.name }}/file-streaming:/config"
+    - "/home/{{ user.name }}/file-streaming/options.json:/usr/share/h5ai/_h5ai/conf/options.json"
     env:
       VIRTUAL_HOST: "{{ hosts.files.second }}"
       LETSENCRYPT_HOST: "{{ hosts.files.second }}"
@@ -68,12 +59,12 @@
 - name: "{{ files.slaves.third }} docker setup"
   docker_container:
     name: "{{ files.slaves.third }}"
-    image: clue/docker-h5ai
+    image: clue/h5ai
     state: started
     volumes:
     - "/rtorrent4/finished/:/var/www"
     - "/home/{{ user.name }}/file-streaming/h5ai-special.conf:/etc/nginx/sites-available/h5ai"
-    - "/home/{{ user.name }}/file-streaming:/config"
+    - "/home/{{ user.name }}/file-streaming/options.json:/usr/share/h5ai/_h5ai/conf/options.json"
     env:
       VIRTUAL_HOST: "{{ hosts.files.third }}"
       LETSENCRYPT_HOST: "{{ hosts.files.third }}"
