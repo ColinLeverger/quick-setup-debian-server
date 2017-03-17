@@ -23,7 +23,7 @@
 - name: "{{ files.master }} docker setup"
   docker_container:
     name: "{{ files.master }}"
-    image: smdion/docker-h5ai
+    image: clue/docker-h5ai
     state: started
     volumes:
     - "/rtorrent/finished/:/var/www"
@@ -38,7 +38,7 @@
 - name: "{{ files.slaves.first }} docker setup"
   docker_container:
     name: "{{ files.slaves.first }}"
-    image: smdion/docker-h5ai
+    image: clue/docker-h5ai
     state: started
     volumes:
     - "/rtorrent2/finished/:/var/www"
@@ -53,7 +53,7 @@
 - name: "{{ files.slaves.second }} docker setup"
   docker_container:
     name: "{{ files.slaves.second }}"
-    image: smdion/docker-h5ai
+    image: clue/docker-h5ai
     state: started
     volumes:
     - "/rtorrent3/finished/:/var/www"
@@ -68,7 +68,7 @@
 - name: "{{ files.slaves.third }} docker setup"
   docker_container:
     name: "{{ files.slaves.third }}"
-    image: smdion/docker-h5ai
+    image: clue/docker-h5ai
     state: started
     volumes:
     - "/rtorrent4/finished/:/var/www"
