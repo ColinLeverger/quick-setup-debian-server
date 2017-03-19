@@ -5,13 +5,13 @@
     - newrelic
     - ansible-role-docker
     - reverse-proxy
-    - srv-voeux
-    - seedbox
-    - files-streaming
-    - jenkins
-    - gogs
-    - cadvisor
-    - owncloud
+    # - srv-voeux
+    # - seedbox
+    # - files-streaming
+    # - jenkins
+    # - gogs
+    # - cadvisor
+    # - owncloud
 
 # Run the following command to launch the playbook and roles.
 # ansible-playbook -b --ask-sudo-pass main.yml -i hosts

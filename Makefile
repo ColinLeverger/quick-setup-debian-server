@@ -11,4 +11,4 @@ update:
 	ansible-playbook -b --ask-sudo-pass update.yml -i hosts
 
 clean:
-	find . -name "*.retry" -exec rm {} \;
+	find . -name "*.retry" -exec rm {} \; && find . -name ".DS_Store" -exec rm {} \;
