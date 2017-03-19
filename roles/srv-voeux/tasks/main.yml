@@ -1,7 +1,6 @@
 ---
 # tasks file for srv-voeux
 # 1 - Clone repos
-
 - name: Create special folder for sites
   file:
     path="/home/{{ user.name }}/sites/"
@@ -14,7 +13,6 @@
     dest="/home/{{ user.name }}/sites/srv-php-voeux/"
 
 # 2 - Docker management
-
 - name: Remove docker conteners if exists
   docker_container:
     name:  "{{item.name}}"

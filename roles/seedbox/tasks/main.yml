@@ -53,6 +53,10 @@
     - "screen -wipe"
   retries: 5
 
+- name: Download image of docker contener
+  docker_image:
+    name: kfei/docktorrent
+
 # 4. First seedbox
 - name: Remove lock to allow several seedbox to run at the same time
   file:
