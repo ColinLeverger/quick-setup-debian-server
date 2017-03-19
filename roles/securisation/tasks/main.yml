@@ -23,19 +23,16 @@
     src="templates/bashrc.j2"
     dest="/home/{{ user.name }}/.bashrc"
     owner={{ user.name }}
-    mode=777
 
 - name: Install pamlogin for {{ user.name }} user
   template:
     src="templates/pamlogin.sh.j2"
     dest="/etc/pam.d/pamlogin.sh"
-    mode=777
 
 - name: Configure pamlogin for {{ user.name }} user
   template:
     src="templates/common-session.j2"
     dest="/etc/pam.d/common-session"
-    mode=777
 
 - name: configure ext4
   unarchive:
