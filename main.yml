@@ -7,7 +7,7 @@
     - reverse-proxy
     - srv-voeux
     - seedbox
-    - files
+    - files-streaming
     - jenkins
     - gogs
     - cadvisor
