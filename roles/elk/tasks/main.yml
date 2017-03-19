@@ -24,11 +24,7 @@
     dest: "{{ item.dest }}"
   with_items:
     - { src: 'templates/logstash.conf.j2', dest: '/home/logstash/pipeline/logstash.conf' }
-    - { src: 'templates/10-logstash.conf.j2', dest: '/etc/rsyslog.d/10-logstash.conf' }
-    - { src: 'templates/01-json-template.conf.j2', dest: '/etc/rsyslog.d/01-json-template.conf' }
     - { src: 'templates/kibana.yml.j2', dest: '/home/kibana/kibana.yml' }
-  notify:
-    - restart rsyslog
 
 # 1. Elasticsearch
 - name: Configure vm.max_map_count in host
@@ -55,15 +51,40 @@
     name: logstash
     image: docker.elastic.co/logstash/logstash:5.2.2
     state: started
+    expose:
+      - 5000
     volumes:
       - "/home/logstash/pipeline/:/usr/share/logstash/pipeline/"
-    expose:
-      - 25826
-    ports:
-      - "25826:25826"
-      - "25826:25826/udp"
     links:
       - "elasticsearch:elasticsearch"
+
+- name: Ensure directory for my docker logspout image exists
+  file:
+    path=/tmp/my-logspout/
+    state=directory
+
+- name: Copy files for my docker image
+  template: src={{ item }} dest=/tmp/my-logspout/{{ item | basename | regex_replace('\.j2','') }}
+  with_fileglob:
+    - templates/logspout-logstash/*.j2
+
+- name: Build my logspout image
+  docker_image:
+    path: /tmp/my-logspout/
+    name: localhost/logspout-logstash
+    tag: v3.1
+
+- name: Create docker contener for logspout and link it to logstash
+  docker_container:
+    name: logspout
+    image: localhost/logspout-logstash:v3.1
+    state: started
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    links:
+      - "logstash:logstash"
+    env:
+      ROUTE_URIS=logstash+tcp://logstash:5000
 
 # 3. Kibana
 - name: Create docker contener for kibana
@@ -72,7 +93,7 @@
     image: docker.elastic.co/kibana/kibana:5.2.2
     state: started
     ports:
-      - "44554:5601"
+      - "44551:5601"
     volumes:
       - "/home/kibana/kibana.yml:/usr/share/kibana/config/kibana.yml"
     links:
