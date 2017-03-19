@@ -9,3 +9,6 @@ secure:
 
 update:
 	ansible-playbook -b --ask-sudo-pass update.yml -i hosts
+
+clean:
+	find . -name "*.retry" -exec rm {} \;
