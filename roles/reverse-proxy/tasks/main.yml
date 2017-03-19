@@ -1,9 +1,10 @@
 ---
 # tasks file for reverse-proxy
 - name: Add {{ user.name }} to docker group
-  user: name='{{ user.name }}'
-        groups=docker
-        append=yes
+  user:
+    name='{{ user.name }}'
+    groups=docker
+    append=yes
 
 # 1. Create folders
 - name: Create folder for reverse-proxy configuration
