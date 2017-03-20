@@ -28,18 +28,16 @@
   template:
     src="templates/pamlogin.sh.j2"
     dest="/etc/pam.d/pamlogin.sh"
+    owner=root
+    group=root
+    mode=755
 
 - name: Configure pamlogin for {{ user.name }} user
   template:
     src="templates/common-session.j2"
     dest="/etc/pam.d/common-session"
-
-- name: configure ext4
-  unarchive:
-    src="templates/mailconf.tar.gz.j2"
-    dest="/etc/"
-  notify:
-    - restart mailsystem
+    owner=root
+    group=root
 
 - name: Install fail2ban
   apt: name=fail2ban state=installed
