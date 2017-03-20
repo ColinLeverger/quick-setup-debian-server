@@ -44,10 +44,27 @@
 - name: Install fail2ban
   apt: name=fail2ban state=installed
 
-- name: Configure fail2ban
-  command: cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
-  notify:
-    - restart fail2ban
+- name: Configure fail2ban jail
+  template:
+    src: "template/jail.local.j2"
+    dest: "/etc/fail2ban/jail.local"
+    owner: root
+    group: root
+
+- name: Configure fail2ban filters
+  template:
+    src: "template/{{ item }}.j2"
+    dest: "/etc/fail2ban/filter.d/{{ item }}"
+    owner: root
+    group: root
+  with_items:
+    - "nginx-http-auth.conf"
+    - "nginx-noscript.conf"
+    - "nginx-nohome.conf"
+    - "nginx-noproxy.conf"
+
+- name: Configure fail2ban filters from existing ones
+  command: cp apache-badbots.conf nginx-badbots.conf
 
 - name: Install rkhunter
   apt: name=rkhunter state=installed
