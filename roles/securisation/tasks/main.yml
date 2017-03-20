@@ -39,6 +39,8 @@
     owner=root
     group=root
 
+# TODO http://bernaerts.dyndns.org/linux/75-debian/278-debian-sendmail-gmail-account
+
 - name: Install fail2ban
   apt: name=fail2ban state=installed
 
