@@ -1,22 +1,18 @@
 input {
   udp {
     port  => 5000
-    codec => json
+    codec => line
   }
   tcp {
     port  => 5000
-    codec => json
+    codec => line
   }
 }
 
 filter { }
 
 output {
-  if [type] == "rsyslog" {
-    elasticsearch {
-      hosts => [ "elasticsearch:9200" ]
-      user => elastic
-      password => changeme
-    }
+  elasticsearch {
+    hosts => [ "elasticsearch:9200" ]
   }
 }

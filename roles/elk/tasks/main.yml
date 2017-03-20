@@ -1,46 +1,27 @@
 ---
 # tasks file for elk
 - name: Ensure that directories needed exist
-  file:
-    path="{{ item }}"
-    state=directory
+  file: path="{{ item }}" state=directory
   with_items:
     - "/home/logstash"
     - "/home/logstash/pipeline"
     - "/home/kibana"
 
 - name: Ensure that elasticsearch directory is writtable/readable by elasticsearch
-  file:
-    path="{{ item }}"
-    state=directory
-    mode=777
-    recurse=yes
+  file: path="{{ item }}" state=directory mode=777 recurse=yes
   with_items:
     - "/home/elasticsearch"
 
 - name: Ensure that configuration files are copied in the good paths
-  template:
-    src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
+  template: src="{{ item.src }}" dest="{{ item.dest }}"
   with_items:
     - { src: 'templates/logstash.conf.j2', dest: '/home/logstash/pipeline/logstash.conf' }
-    - { src: 'templates/kibana.yml.j2', dest: '/home/kibana/kibana.yml' }
 
 # 1. Elasticsearch
-- name: Configure vm.max_map_count in host
-  lineinfile:
-    dest=/etc/sysctl.conf
-    line='vm.max_map_count=262144'
-    state=present
-  become: yes
-  become_method: sudo
-  notify:
-    - reload sysctl.conf
-
 - name: Create docker contener for elasticsearch
   docker_container:
     name: elasticsearch
-    image: docker.elastic.co/elasticsearch/elasticsearch:5.2.2
+    image: elasticsearch
     state: started
     volumes:
       - "/home/elasticsearch:/usr/share/elasticsearch/data"
@@ -58,43 +39,32 @@
     links:
       - "elasticsearch:elasticsearch"
 
-- name: Ensure directory for my docker logspout image exists
-  file:
-    path=/tmp/my-logspout/
-    state=directory
-
-- name: Copy files for my docker image
-  template: src={{ item }} dest=/tmp/my-logspout/{{ item | basename | regex_replace('\.j2','') }}
-  with_fileglob:
-    - templates/logspout-logstash/*.j2
-
-- name: Build my logspout image
-  docker_image:
-    path: /tmp/my-logspout/
-    name: localhost/logspout-logstash
-    tag: v3.1
-
 - name: Create docker contener for logspout and link it to logstash
   docker_container:
     name: logspout
-    image: localhost/logspout-logstash:v3.1
+    image: bekt/logspout-logstash
     state: started
+    restart: yes
+    restart_policy: on-failure
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
     links:
       - "logstash:logstash"
     env:
-      ROUTE_URIS=logstash+tcp://logstash:5000
+      ROUTE_URIS=logstash://logstash:5000
 
 # 3. Kibana
 - name: Create docker contener for kibana
   docker_container:
     name: kibana
-    image: docker.elastic.co/kibana/kibana:5.2.2
+    image: kibana
     state: started
-    ports:
-      - "44551:5601"
-    volumes:
-      - "/home/kibana/kibana.yml:/usr/share/kibana/config/kibana.yml"
+    expose:
+      - 5601
     links:
       - "elasticsearch:elasticsearch"
+    env:
+      VIRTUAL_PORT: 5601
+      VIRTUAL_HOST: "{{ hosts.kibana }}"
+      LETSENCRYPT_HOST: "{{ hosts.kibana }}"
+      LETSENCRYPT_EMAIL: "{{ letsencrypt.email }}"
