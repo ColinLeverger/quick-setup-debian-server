@@ -5,6 +5,7 @@
 # To generate the encrypted pwd, see: http://docs.ansible.com/ansible/faq.html#how-do-i-generate-crypted-passwords-for-the-user-module
 user:
   name: your_user
+  email: your-email@hey.co
   pwd: your_encrypted_pwd
 
 # Security of the server
