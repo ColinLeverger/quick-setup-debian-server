@@ -1,15 +1,45 @@
 input {
-  udp {
-    port  => 5000
-    codec => line
-  }
   tcp {
-    port  => 5000
-    codec => line
+    port => 5000
+    type => json 
+  }
+  udp {
+    port => 5000
+    type => json
   }
 }
 
-filter { }
+filter {
+  json {
+    source => "message"
+  }
+
+  grok {
+    match => [ "message" , "%{COMBINEDAPACHELOG}+%{GREEDYDATA:extra_fields}"]
+    overwrite => [ "message" ]
+  }
+     
+  mutate {
+    convert => ["response", "integer"]
+    convert => ["bytes", "integer"]
+    convert => ["responsetime", "float"]
+  }
+     
+  geoip {
+    source => "clientip"
+    target => "geoip"
+    add_tag => [ "nginx-geoip" ]
+  }
+     
+  date {
+    match => [ "timestamp" , "dd/MMM/YYYY:HH:mm:ss Z" ]
+    remove_field => [ "timestamp" ]
+  }
+     
+  useragent {
+    source => "agent"
+  }
+}
 
 output {
   elasticsearch {
