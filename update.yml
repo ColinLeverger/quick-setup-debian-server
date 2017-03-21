@@ -1,12 +1,11 @@
 - hosts: user
   roles:
-    # - reverse-proxy
-    # - srv-voeux
-    # - files-streaming
-    # - jenkins
-    # - gogs
-    # - cadvisor
-    # - owncloud
-    # - elk
+    - reverse-proxy
+    - srv-voeux
+    - jenkins
+    - gogs
+    - cadvisor
+    - owncloud
+    - elk
 
 - include: seedbox.yml

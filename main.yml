@@ -6,7 +6,6 @@
     - ansible-role-docker
     - reverse-proxy
     - srv-voeux
-    - files-streaming
     - jenkins
     - gogs
     - cadvisor
