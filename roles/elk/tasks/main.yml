@@ -26,18 +26,14 @@
     volumes:
       - "/home/elasticsearch:/usr/share/elasticsearch/data"
 
-# 2. logstash
+# 2. logstash (dirty way because it is not working w/ ansible & docker module)
+# any help appreciated :)
 - name: Create docker contener for logstash
-  docker_container:
-    name: logstash
-    image: docker.elastic.co/logstash/logstash:5.2.2
-    state: started
-    expose:
-      - 5000
-    volumes:
-      - "/home/logstash/pipeline/:/usr/share/logstash/pipeline/"
-    links:
-      - "elasticsearch:elasticsearch"
+  command: "docker run -d
+    -v /home/logstash/pipeline/:/config-dir
+    --name logstash
+    --link elasticsearch:elasticsearch
+    logstash -f /config-dir/logstash.conf"
 
 - name: Create docker contener for logspout and link it to logstash
   docker_container:
