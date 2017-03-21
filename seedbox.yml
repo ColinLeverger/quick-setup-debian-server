@@ -1,0 +1,49 @@
+- hosts: user
+  tasks:
+  - name: Download image of docker contener
+    docker_image:
+      name: kfei/docktorrent
+  roles:
+  - name: master seedbox
+    role: seedbox
+    vars:
+      srv_root: "/rtorrent"
+      seedbox_name: "{{ seedbox_master.name }}"
+      letsencrypt_host: "{{ hosts.seedbox_master }}"
+      letsencrypt_email: "{{ letsencrypt.email }}"
+      host_seedbox: "{{ hosts.seedbox_master }}"
+      ports_up: "{{ seedbox_master.ports.up }}"
+      ports_down: "{{ seedbox_master.ports.dl }}"
+
+  - name: first slave seedbox
+    role: seedbox
+    vars:
+      srv_root: "/rtorrent2"
+      seedbox_name: "{{ seedbox_slaves.names.first }}"
+      letsencrypt_host: "{{ hosts.seedbox_slaves.first }}"
+      letsencrypt_email: "{{ letsencrypt.email }}"
+      host_seedbox: "{{ hosts.seedbox_slaves.first }}"
+      ports_up: "{{ seedbox_slaves.ports.up }}"
+      ports_down: "{{ seedbox_slaves.ports.first }}"
+
+  - name: second slave seedbox
+    role: seedbox
+    vars:
+      srv_root: "/rtorrent3"
+      seedbox_name: "{{ seedbox_slaves.names.second }}"
+      letsencrypt_host: "{{ hosts.seedbox_slaves.second }}"
+      letsencrypt_email: "{{ letsencrypt.email }}"
+      host_seedbox: "{{ hosts.seedbox_slaves.second }}"
+      ports_up: "{{ seedbox_slaves.ports.up }}"
+      ports_down: "{{ seedbox_slaves.ports.second }}"
+
+  - name: third slave seedbox
+    role: seedbox
+    vars:
+      srv_root: "/rtorrent4"
+      seedbox_name: "{{ seedbox_slaves.names.third }}"
+      letsencrypt_host: "{{ hosts.seedbox_slaves.third }}"
+      letsencrypt_email: "{{ letsencrypt.email }}"
+      host_seedbox: "{{ hosts.seedbox_slaves.third }}"
+      ports_up: "{{ seedbox_slaves.ports.up }}"
+      ports_down: "{{ seedbox_slaves.ports.third }}"

@@ -1,163 +1,54 @@
 ---
 # tasks file for seedbox
-# 1. Create folders to store files
-# For master and slave seedbox
-- name: Ensure that directories needed exist
+- name: Ensure that directories needed for seedbox "{{ seedbox_name }}" exist
   file:
-    path="{{ item }}"
-    state=directory
+    path: "{{ item }}"
+    state: directory
+    owner: www-data
+    group: www-data
+    recurse: yes
+  with_items:
+    - "{{ srv_root }}"
+    - "{{ srv_root }}/finished"
+
+- name: htpasswd for seedbox "{{ seedbox_name }}" configuration
+  template:
+    src="templates/{{ host_seedbox }}.j2"
+    dest="/rtorrent/finished/.htpasswd"
     owner=www-data
     group=www-data
-    recurse=yes
-  with_items:
-    - "/rtorrent"
-    - "/rtorrent/finished"
-    - "/rtorrent2"
-    - "/rtorrent2/finished"
-    - "/rtorrent3"
-    - "/rtorrent3/finished"
-    - "/rtorrent4"
-    - "/rtorrent4/finished"
 
-# 2. Copy .htpasswd files
-- include: my_specialconfs.yml
+- name: Remove lock to allow several seedbox to run at the same time
+  file:
+    path: "{{ srv_root }}/.session/rtorrent.lock"
+    state: absent
+  become: yes
+  become_user: root
+  become_method: sudo
 
-# 3. Cleanup: remove existing docker conteners
-- name: Remove docker conteners if exist
+- name: Create docker conteners for seedbox "{{ seedbox_name }}"
   docker_container:
     name: "{{ item.name }}"
     image: "{{ item.image }}"
-    state: absent
+    state: started
+    interactive: yes
+    privileged: yes
+    user: root:root
     force_kill: yes
+    restart_policy: always
+    dns_servers: 8.8.8.8
+    ports:
+      - "{{ ports_up }}"
+      - "{{ ports_down }}"
+    volumes:
+      - "{{ srv_root }}/finished/.htpasswd:/usr/share/nginx/html/rutorrent/.htpasswd"
+      - "{{ srv_root }}:/rtorrent"
+    env:
+      LETSENCRYPT_HOST: "{{ letsencrypt_host }}"
+      LETSENCRYPT_EMAIL: "{{ letsencrypt_email }}"
+      LOGSPOUT: ignore
+      TERM: xterm
+      UPLOAD_RATE: 0
+      VIRTUAL_HOST: "{{ host_seedbox }}"
   with_items:
-    - { name: '{{ seedbox_master.name }}', image: 'kfei/docktorrent' }
-    - { name: '{{ seedbox_slaves.names.first }}', image: 'kfei/docktorrent' }
-    - { name: '{{ seedbox_slaves.names.second }}', image: 'kfei/docktorrent' }
-    - { name: '{{ seedbox_slaves.names.third }}', image: 'kfei/docktorrent' }
-  become: yes
-  become_user: root
-  become_method: sudo
-  retries: 5
-
-# Chill out mate
-- name: pause execution to chill a bit
-  pause: seconds=30
-
-- name: Wipe existing screen
-  command: "{{ item }}"
-  ignore_errors: yes
-  become: yes
-  become_user: "{{ user.name }}"
-  with_items:
-    - "screen -ls | grep pts | cut -d. -f1 | awk '{print $1}' | xargs kill"
-    - "screen -wipe"
-  retries: 5
-
-- name: Download image of docker contener
-  docker_image:
-    name: kfei/docktorrent
-
-# 4. First seedbox
-- name: Remove lock to allow several seedbox to run at the same time
-  file:
-    path: /rtorrent/.session/rtorrent.lock
-    state: absent
-  become: yes
-  become_user: root
-  become_method: sudo
-
-# Dirty turnaround: launch a seedbox on a detached screen...
-- name: "{{ seedbox_master.name }} setup"
-  command: "screen -dmS {{ seedbox_master.name }} bash -c 'docker run -it -p {{ seedbox_master.ports.dl }} \
-  --restart=always \
-  -p {{ seedbox_master.ports.up }} \
-  --dns 8.8.8.8 \
-  -e UPLOAD_RATE=0 \
-  -v /rtorrent/:/rtorrent \
-  -v /rtorrent/finished/.htpasswd:/usr/share/nginx/html/rutorrent/.htpasswd \
-  -e VIRTUAL_HOST={{ hosts.seedbox_master }} \
-  -e UPLOAD_RATE=0 \
-  -e LETSENCRYPT_HOST={{ hosts.seedbox_master }} \
-  -e LETSENCRYPT_EMAIL={{ letsencrypt.email }} \
-  --name {{ seedbox_master.name }} \
-  kfei/docktorrent'"
-  become: yes
-  become_user: "{{ user.name }}"
-
-# 5. Second seedbox...
-- name: Remove lock to allow several seedbox to run at the same time
-  file:
-    path: /rtorrent2/.session/rtorrent.lock
-    state: absent
-  become: yes
-  become_user: root
-  become_method: sudo
-
-- name: "{{ seedbox_slaves.names.first }} setup"
-  command: "screen -dmS {{ seedbox_slaves.names.first }} bash -c 'docker run -it \
-  -p {{ seedbox_slaves.ports.first }} \
-  --restart=always \
-  --dns 8.8.8.8 \
-  -e UPLOAD_RATE=0 \
-  -v /rtorrent2/:/rtorrent \
-  -v /rtorrent2/finished/.htpasswd:/usr/share/nginx/html/rutorrent/.htpasswd \
-  -e VIRTUAL_HOST={{ hosts.seedbox_slaves.first }} \
-  -e UPLOAD_RATE=0 \
-  -e LETSENCRYPT_HOST={{ hosts.seedbox_slaves.first }} \
-  -e LETSENCRYPT_EMAIL={{ letsencrypt.email }} \
-  --name {{ seedbox_slaves.names.first }} \
-  kfei/docktorrent'"
-  become: yes
-  become_user: "{{ user.name }}"
-
-# 6. Third seedbox...
-- name: Remove lock to allow several seedbox to run at the same time
-  file:
-    path: /rtorrent3/.session/rtorrent.lock
-    state: absent
-  become: yes
-  become_user: root
-  become_method: sudo
-
-- name: "{{ seedbox_slaves.names.second }} setup"
-  command: "screen -dmS {{ seedbox_slaves.names.second }} bash -c 'docker run -it \
-  -p {{ seedbox_slaves.ports.second }} \
-  --restart=always \
-  --dns 8.8.8.8 \
-  -e UPLOAD_RATE=0 \
-  -v /rtorrent3/:/rtorrent \
-  -v /rtorrent3/finished/.htpasswd:/usr/share/nginx/html/rutorrent/.htpasswd \
-  -e VIRTUAL_HOST={{ hosts.seedbox_slaves.second }} \
-  -e UPLOAD_RATE=0 \
-  -e LETSENCRYPT_HOST={{ hosts.seedbox_slaves.second }} \
-  -e LETSENCRYPT_EMAIL={{ letsencrypt.email }} \
-  --name {{ seedbox_slaves.names.second }} \
-  kfei/docktorrent'"
-  become: yes
-  become_user: "{{ user.name }}"
-
-# 6. Fourth seedbox...
-- name: Remove lock to allow several seedbox to run at the same time
-  file:
-    path: /rtorrent4/.session/rtorrent.lock
-    state: absent
-  become: yes
-  become_user: root
-  become_method: sudo
-
-- name: "{{ seedbox_slaves.names.third }} setup"
-  command: "screen -dmS {{ seedbox_slaves.names.third }} bash -c 'docker run -it \
-  -p {{ seedbox_slaves.ports.third }} \
-  --restart=always \
-  --dns 8.8.8.8 \
-  -e UPLOAD_RATE=0 \
-  -v /rtorrent4/:/rtorrent \
-  -v /rtorrent4/finished/.htpasswd:/usr/share/nginx/html/rutorrent/.htpasswd \
-  -e VIRTUAL_HOST={{ hosts.seedbox_slaves.third }} \
-  -e UPLOAD_RATE=0 \
-  -e LETSENCRYPT_HOST={{ hosts.seedbox_slaves.third }} \
-  -e LETSENCRYPT_EMAIL={{ letsencrypt.email }} \
-  --name {{ seedbox_slaves.names.third }} \
-  kfei/docktorrent'"
-  become: yes
-  become_user: "{{ user.name }}"
+    - { name: "{{ seedbox_name }}", image: "kfei/docktorrent" }

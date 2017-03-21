@@ -2,10 +2,11 @@
   roles:
     # - reverse-proxy
     # - srv-voeux
-    # - seedbox
     # - files-streaming
     # - jenkins
     # - gogs
     # - cadvisor
     # - owncloud
-    - elk
+    # - elk
+
+- include: seedbox.yml
