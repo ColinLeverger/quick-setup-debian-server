@@ -1,8 +1,5 @@
 - hosts: user
   roles:
-    # - basic-services
-    # # - newrelic
-    # - docker-install
     # - reverse-proxy
     # - srv-voeux
     # - seedbox
@@ -11,4 +8,4 @@
     # - gogs
     # - cadvisor
     # - owncloud
-    #- elk
+    # - elk

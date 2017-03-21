@@ -4,7 +4,7 @@ Ansible setup to configure a blank Debian 8 server automatically with only one c
 
 # Quick Start
 
-1. `ansible-playbook *.yml --syntax-check`
+1. `make test-syntax`
 2. `cd roles && git clone https://github.com/abaez/ansible-role-docker`
 3. Customise variables in `./group_vars/all/vars_file.txt` and change extention of the file from `.txt` to `.yml`.
 4. Run `make init` for first run of the script (on a blank server) or `make update` to update an already secured server.
@@ -28,11 +28,14 @@ Ansible setup to configure a blank Debian 8 server automatically with only one c
     - `reverse-proxy`: install & configure a reverse proxy to route all the http requests to the good dockerized service. Based on `jwilder/nginx-proxy` docker scripts. See: https://github.com/jwilder/nginx-proxy
     - `srv-voeux`: install & configure a php website used in my portfolio. _You probably won't need that... ;)_
     - `seedbox`: install & configure several seedbox. Based on `kfei/docktorrent` docker scripts. See: https://github.com/kfei/docktorrent
-    - `files`: install & configure several https web interface to retrieve the files downloaded by the seedbox. Based on `smdion/docker-h5ai` docker scripts. See: https://hub.docker.com/r/smdion/docker-h5ai/.
+    - `files-streaming`: install & configure several https web interface to retrieve the files downloaded by the seedbox. Based on `clue/h5ai` docker scripts. See: https://hub.docker.com/r/clue/h5ai/.
     - `jenkins`: install & configure Jenkins.
     - `gogs`: install & configure a git repo for this server. Use of gogs, see: https://github.com/gogits/gogs
     - `cadvisor`: install & configure cAdvisor to monitor all the services created. Use of cAdvisor, see: https://github.com/google/cadvisor.
     - `owncloud`: install & configure an ownCloud server.
+    - `elk`: install & configure an ELK stack to monitore both server & docker itself.
+
+All the websites & services published can be SSL-ized using LetsEncrypt.
 
 # How to Run the Scripts
 
@@ -40,7 +43,7 @@ Ansible setup to configure a blank Debian 8 server automatically with only one c
 2. Customise variables. Under `./group_vars/all/`, there is a file named `vars_file.txt`:
   * Change all the variables you need inside of this file,
   * Change the extension of the file from `.txt` to `.yml`.
-3. Create template files (SSL certs, htpasswd files, ...) needed to configure the different services (see next section for more explanations about the templates and files needed)
+3. Create template files (htpasswd files, ...) needed to configure the different services (see next section for more explanations about the templates and files needed)
 4. Run the command `make (init|update)` (init for blank server, update for already secured server); type the password you have configured in `./group_vars/all/vars_file.txt`
 5. Grab a coffee, chill out... Because everything is done now - you only have to wait for the end of the execution. :)
 
@@ -99,9 +102,6 @@ This folder contains the htpasswd files needed in previous step.
 
 # Improvements & TODOs
 
-- Bugs:
-    * `mariadb` for owncloud on some servers,
-    * `python-pip` installation fails sometime.
 - Refactor code (in particular variables structure) to have a better code quality,
 - Improve workaround for having multiple seedboxes on the same host: using screens is not a brilliant solution, and I am really interested in something prettier (maybe customizing the `Dockerfile` of rtorrent?),
 - Write tests.

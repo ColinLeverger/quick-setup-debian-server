@@ -12,3 +12,6 @@ update:
 
 clean:
 	find . -name "*.retry" -exec rm {} \; && find . -name ".DS_Store" -exec rm {} \;
+
+test-syntax:
+	ansible-playbook *.yml --syntax-check
