@@ -8,4 +8,4 @@
     echo "TTY: $PAM_TTY"
     echo "Date: `date`"
     echo "Server: `uname -a`"
-} | mail -s "`hostname -s` $PAM_SERVICE login: $PAM_USER" colinleverger@gmail.com
+} | mail -s "`hostname -s` $PAM_SERVICE login: $PAM_USER" {{ user.email }}

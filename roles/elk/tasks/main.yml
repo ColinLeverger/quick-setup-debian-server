@@ -1,0 +1,78 @@
+---
+# tasks file for elk
+- name: Ensure that directories needed exist
+  file: path="{{ item }}" state=directory
+  with_items:
+    - "/home/logstash"
+    - "/home/logstash/pipeline"
+    - "/home/kibana"
+
+- name: Ensure that elasticsearch directory is writtable/readable by elasticsearch
+  file: path="{{ item }}" state=directory mode=777 recurse=yes
+  with_items:
+    - "/home/elasticsearch"
+
+- name: Ensure that configuration files are copied in the good paths
+  template: src="{{ item.src }}" dest="{{ item.dest }}"
+  with_items:
+    - { src: 'templates/logstash.conf.j2', dest: '/home/logstash/pipeline/logstash.conf' }
+
+# 1. Elasticsearch
+- name: Create docker contener for elasticsearch
+  docker_container:
+    name: elasticsearch
+    image: elasticsearch
+    restart_policy: on-failure
+    state: started
+    volumes:
+      - "/home/elasticsearch:/usr/share/elasticsearch/data"
+
+# 2. logstash
+- name: Create docker contener for logstash
+  docker_container:
+    name: logstash
+    image: logstash
+    state: started
+    restart_policy: on-failure
+    command: logstash -f /config-dir/logstash.conf
+    links:
+      - "elasticsearch:elasticsearch"
+    volumes:
+      - "/home/logstash/pipeline/:/config-dir"
+      - "/tmp/log/:/var/log:ro"
+    env:
+      LOGSPOUT: ignore
+
+- name: pause execution to chill a bit
+  pause: seconds=260
+
+- name: Create docker contener for logspout and link it to logstash
+  docker_container:
+    name: logspout
+    image: bekt/logspout-logstash
+    state: started
+    recreate: yes
+    restart_policy: on-failure
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    links:
+      - "logstash:logstash"
+    env:
+      ROUTE_URIS: logstash+tcp://logstash:5000
+
+# 3. Kibana
+- name: Create docker contener for kibana
+  docker_container:
+    name: kibana
+    image: kibana
+    state: started
+    restart_policy: on-failure
+    expose:
+      - 5601
+    links:
+      - "elasticsearch:elasticsearch"
+    env:
+      VIRTUAL_PORT: 5601
+      VIRTUAL_HOST: "{{ hosts.kibana }}"
+      LETSENCRYPT_HOST: "{{ hosts.kibana }}"
+      LETSENCRYPT_EMAIL: "{{ letsencrypt.email }}"

@@ -1,0 +1,6 @@
+---
+# handlers file for elk
+- name: reload sysctl.conf
+  command: sysctl --system
+  become: yes
+  become_method: sudo

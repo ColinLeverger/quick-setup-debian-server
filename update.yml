@@ -6,8 +6,9 @@
     # - reverse-proxy
     # - srv-voeux
     # - seedbox
-    - files-streaming
+    # - files-streaming
     # - jenkins
     # - gogs
-    - cadvisor
+    # - cadvisor
     # - owncloud
+    #- elk

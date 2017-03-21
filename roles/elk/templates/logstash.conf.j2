@@ -1,0 +1,69 @@
+input {
+  tcp {
+    port => 5000
+    type => "json"
+  }
+  file {
+    path => "/tmp/log/auth.log"
+    start_position => "beginning"
+    type => "syslog"
+  }
+  file {
+    path => "/tmp/log/kern.log"
+    start_position => "beginning"
+    type => "syslog"
+  }
+  file {
+    path => "/tmp/log/syslog"
+    start_position => "beginning"
+    type => "syslog"
+  }
+  file {
+    path => "/tmp/log/messages"
+    start_position => "beginning"
+    type => "syslog"
+  }
+}
+
+filter {
+  if [type] == "json" {
+    json {
+      source => "message"
+    }
+
+    grok {
+      match => [ "message" , "%{COMBINEDAPACHELOG}+%{GREEDYDATA:extra_fields}"]
+      overwrite => [ "message" ]
+    }
+
+    mutate {
+      convert => ["response", "integer"]
+      convert => ["bytes", "integer"]
+      convert => ["responsetime", "float"]
+    }
+
+    geoip {
+      source => "clientip"
+      target => "geoip"
+      add_tag => [ "nginx-geoip" ]
+    }
+
+    date {
+      match => [ "timestamp" , "dd/MMM/YYYY:HH:mm:ss Z" ]
+      remove_field => [ "timestamp" ]
+    }
+
+    useragent {
+      source => "agent"
+    }
+  }
+#  if [type] == "syslog" {
+#
+#  }
+}
+
+output {
+  elasticsearch {
+    hosts => [ "elasticsearch:9200" ]
+  }
+}
