@@ -22,33 +22,43 @@
   docker_container:
     name: elasticsearch
     image: elasticsearch
+    restart_policy: on-failure
     state: started
     volumes:
       - "/home/elasticsearch:/usr/share/elasticsearch/data"
 
-# 2. logstash (dirty way because it is not working w/ ansible & docker module)
-# any help appreciated :)
+# 2. logstash
 - name: Create docker contener for logstash
-  command: "docker run -d
-    -v /home/logstash/pipeline/:/config-dir
-    --name logstash
-    --link elasticsearch:elasticsearch
-    -e LOGSPOUT=ignore
-    logstash -f /config-dir/logstash.conf"
+  docker_container:
+    name: logstash
+    image: logstash
+    state: started
+    restart_policy: on-failure
+    command: logstash -f /config-dir/logstash.conf
+    links:
+      - "elasticsearch:elasticsearch"
+    volumes:
+      - "/home/logstash/pipeline/:/config-dir"
+      - "/tmp/log/:/var/log:ro"
+    env:
+      LOGSPOUT: ignore
+
+- name: pause execution to chill a bit
+  pause: seconds=260
 
 - name: Create docker contener for logspout and link it to logstash
   docker_container:
     name: logspout
     image: bekt/logspout-logstash
     state: started
-    restart: yes
+    recreate: yes
     restart_policy: on-failure
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
     links:
       - "logstash:logstash"
     env:
-      ROUTE_URIS: logstash://logstash:5000
+      ROUTE_URIS: logstash+tcp://logstash:5000
 
 # 3. Kibana
 - name: Create docker contener for kibana
@@ -56,6 +66,7 @@
     name: kibana
     image: kibana
     state: started
+    restart_policy: on-failure
     expose:
       - 5601
     links:
