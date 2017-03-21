@@ -33,6 +33,7 @@
     -v /home/logstash/pipeline/:/config-dir
     --name logstash
     --link elasticsearch:elasticsearch
+    -e LOGSPOUT=ignore
     logstash -f /config-dir/logstash.conf"
 
 - name: Create docker contener for logspout and link it to logstash
@@ -47,7 +48,7 @@
     links:
       - "logstash:logstash"
     env:
-      ROUTE_URIS=logstash://logstash:5000
+      ROUTE_URIS: logstash://logstash:5000
 
 # 3. Kibana
 - name: Create docker contener for kibana
