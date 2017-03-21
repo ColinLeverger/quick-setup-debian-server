@@ -4,22 +4,22 @@ input {
     type => "json"
   }
   file {
-    path => "/tmp/log/auth.log"
+    path => "/var/log/auth.log"
     start_position => "beginning"
     type => "syslog"
   }
   file {
-    path => "/tmp/log/kern.log"
+    path => "/var/log/kern.log"
     start_position => "beginning"
     type => "syslog"
   }
   file {
-    path => "/tmp/log/syslog"
+    path => "/var/log/syslog"
     start_position => "beginning"
     type => "syslog"
   }
   file {
-    path => "/tmp/log/messages"
+    path => "/var/log/messages"
     start_position => "beginning"
     type => "syslog"
   }

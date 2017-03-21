@@ -34,12 +34,13 @@
     image: logstash
     state: started
     restart_policy: on-failure
-    command: logstash -f /config-dir/logstash.conf
+    privileged: yes
+    command: gosu root logstash -f /config-dir/logstash.conf
     links:
       - "elasticsearch:elasticsearch"
     volumes:
       - "/home/logstash/pipeline/:/config-dir"
-      - "/tmp/log/:/var/log:ro"
+      - "/var/log:/var/log:ro"
     env:
       LOGSPOUT: ignore
 
