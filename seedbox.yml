@@ -1,8 +1,4 @@
 - hosts: user
-  tasks:
-  - name: Download image of docker contener
-    docker_image:
-      name: kfei/docktorrent
   roles:
   - name: master seedbox
     role: seedbox
@@ -14,7 +10,8 @@
       host_seedbox: "{{ hosts.seedbox_master }}"
       ports_up: "{{ seedbox_master.ports.up }}"
       ports_down: "{{ seedbox_master.ports.dl }}"
-
+      h5ai_name: "{{ files.master }}"
+      h5ai_host: "{{ hosts.files.master }}"
   - name: first slave seedbox
     role: seedbox
     vars:
@@ -24,8 +21,9 @@
       letsencrypt_email: "{{ letsencrypt.email }}"
       host_seedbox: "{{ hosts.seedbox_slaves.first }}"
       ports_up: "{{ seedbox_slaves.ports.up }}"
-      ports_down: "{{ seedbox_slaves.ports.first }}"
-
+      ports_down: "{{ seedbox_slaves.ports.dl }}"
+      h5ai_name: "{{ files.slaves.first }}"
+      h5ai_host: "{{ hosts.files.first }}"
   - name: second slave seedbox
     role: seedbox
     vars:
@@ -35,8 +33,9 @@
       letsencrypt_email: "{{ letsencrypt.email }}"
       host_seedbox: "{{ hosts.seedbox_slaves.second }}"
       ports_up: "{{ seedbox_slaves.ports.up }}"
-      ports_down: "{{ seedbox_slaves.ports.second }}"
-
+      ports_down: "{{ seedbox_slaves.ports.dl }}"
+      h5ai_name: "{{ files.slaves.second }}"
+      h5ai_host: "{{ hosts.files.second }}"
   - name: third slave seedbox
     role: seedbox
     vars:
@@ -46,4 +45,6 @@
       letsencrypt_email: "{{ letsencrypt.email }}"
       host_seedbox: "{{ hosts.seedbox_slaves.third }}"
       ports_up: "{{ seedbox_slaves.ports.up }}"
-      ports_down: "{{ seedbox_slaves.ports.third }}"
+      ports_down: "{{ seedbox_slaves.ports.dl }}"
+      h5ai_name: "{{ files.slaves.third }}"
+      h5ai_host: "{{ hosts.files.third }}"

@@ -1,5 +1,13 @@
 ---
 # tasks file for seedbox
+- name: Special conf for "{{ h5ai_name }}"
+  template:
+    src="templates/{{ item }}.j2"
+    dest="{{ srv_root }}/{{ item }}"
+  with_items:
+    - h5ai-special.conf
+    - options.json
+
 - name: Ensure that directories needed for seedbox "{{ seedbox_name }}" exist
   file:
     path: "{{ item }}"
@@ -13,10 +21,10 @@
 
 - name: htpasswd for seedbox "{{ seedbox_name }}" configuration
   template:
-    src="templates/{{ host_seedbox }}.j2"
-    dest="/rtorrent/finished/.htpasswd"
-    owner=www-data
-    group=www-data
+    src: "templates/{{ host_seedbox }}.j2"
+    dest: "/rtorrent/finished/.htpasswd"
+    owner: www-data
+    group: www-data
 
 - name: Remove lock to allow several seedbox to run at the same time
   file:
@@ -52,3 +60,18 @@
       VIRTUAL_HOST: "{{ host_seedbox }}"
   with_items:
     - { name: "{{ seedbox_name }}", image: "kfei/docktorrent" }
+
+- name: "{{ h5ai_name }} docker setup"
+  docker_container:
+    name: "{{ h5ai_name }}"
+    image: clue/h5ai
+    state: started
+    volumes:
+    - "{{ srv_root }}/finished/:/var/www"
+    - "{{ srv_root }}/h5ai-special.conf:/etc/nginx/sites-available/h5ai"
+    - "{{ srv_root }}/options.json:/usr/share/h5ai/_h5ai/conf/options.json"
+    env:
+      VIRTUAL_HOST: "{{ h5ai_host }}"
+      LETSENCRYPT_HOST: "{{ h5ai_host }}"
+      LETSENCRYPT_EMAIL: "{{ letsencrypt_email }}"
+      ALLOW_OVERRIDE: true

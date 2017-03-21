@@ -2,8 +2,7 @@ main.retry
 group_vars/all/vars_file.yml
 roles/reverse-proxy/templates/*
 roles/reverse-proxy/tasks/my_specialconfs.yml
-roles/seedbox/tasks/my_specialconfs.yml
-roles/seedbox/templates/*
+roles/seedbox/templates/*.fr.j2
 roles/ansible-role-java/
 update.retry
 roles/owncloud/templates/

@@ -32,8 +32,8 @@ seedbox_slaves:
   names:
     first: first-slave
   ports:
-    first: "1369:9527/udp"
-    up_general: "45566"
+    dl: "9527/udp"
+    up: "45566"
 
 
 # Files download

@@ -27,8 +27,7 @@ Ansible setup to configure a blank Debian 8 server automatically with only one c
 * Installation of various Docker services:
     - `reverse-proxy`: install & configure a reverse proxy to route all the http requests to the good dockerized service. Based on `jwilder/nginx-proxy` docker scripts. See: https://github.com/jwilder/nginx-proxy
     - `srv-voeux`: install & configure a php website used in my portfolio. _You probably won't need that... ;)_
-    - `seedbox`: install & configure several seedbox. Based on `kfei/docktorrent` docker scripts. See: https://github.com/kfei/docktorrent
-    - `files-streaming`: install & configure several https web interface to retrieve the files downloaded by the seedbox. Based on `clue/h5ai` docker scripts. See: https://hub.docker.com/r/clue/h5ai/.
+    - `seedbox`: install & configure several seedbox. Based on `kfei/docktorrent` docker scripts. See: https://github.com/kfei/docktorrent. Also install & configure several https web interface to retrieve the files downloaded by the seedbox. Based on `clue/h5ai` docker scripts. See: https://hub.docker.com/r/clue/h5ai/.
     - `jenkins`: install & configure Jenkins.
     - `gogs`: install & configure a git repo for this server. Use of gogs, see: https://github.com/gogits/gogs
     - `cadvisor`: install & configure cAdvisor to monitor all the services created. Use of cAdvisor, see: https://github.com/google/cadvisor.
@@ -92,18 +91,13 @@ This folder contains everything needed in previous step, such as:
 - Special configuration files...
 
 ## Seedbox
-### "tasks/my_specialconfs_pub.yml"
-
-Copy htpasswd files for seedboxes.
 
 ### "templates/"
 
-This folder contains the htpasswd files needed in previous step.
+This folder contains the htpasswd files needed to secure the seedbox, and also some special conf files for h5ai.
 
 # Improvements & TODOs
 
-- Refactor code (in particular variables structure) to have a better code quality,
-- Improve workaround for having multiple seedboxes on the same host: using screens is not a brilliant solution, and I am really interested in something prettier (maybe customizing the `Dockerfile` of rtorrent?),
 - Write tests.
 
 If you find bugs & improvements, feel free to submit an issue, fork this project and send pull requests! :)
