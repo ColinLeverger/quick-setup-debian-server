@@ -57,6 +57,4 @@ hosts:
     first: your-url.com
   php: your-url.com
   kibana: your-url.com
-
-kibana:
-  host: your-url.com
+  grafana: your-url.com

@@ -1,0 +1,28 @@
+---
+# tasks file for grafana
+- name: Create /var/lib/grafana as persistent volume storage
+  docker_container:
+    name: grafana-storage
+    image: busybox:latest
+    state: started
+    volumes:
+      - "/var/lib/grafana"
+
+- name: Start grafana
+  docker_container:
+    name: grafana
+    image: grafana/grafana
+    restart_policy: on-failure
+    state: started
+    links:
+      - "elasticsearch:elasticsearch"
+    volumes_from:
+      - grafana-storage
+    env:
+      VIRTUAL_PORT: 3000
+      VIRTUAL_HOST: "{{ hosts.grafana }}"
+      LETSENCRYPT_HOST: "{{ hosts.grafana }}"
+      LETSENCRYPT_EMAIL: "{{ letsencrypt.email }}"
+      GF_INSTALL_PLUGINS: "grafana-clock-panel,grafana-simple-json-datasource,raintank-worldping-app,grafana-piechart-panel,ryantxu-ajax-panel,natel-plotly-panel"
+      GF_SERVER_ROOT_URL: "https://{{ hosts.grafana }}"
+      GF_USERS_ALLOW_SIGN_UP: false

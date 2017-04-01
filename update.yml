@@ -7,5 +7,6 @@
     - cadvisor
     - owncloud
     - elk
+    - grafana
 
 - include: seedbox.yml
