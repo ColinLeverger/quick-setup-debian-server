@@ -1,6 +1,4 @@
-init:
-	ansible-playbook -b --ask-sudo-pass secure.yml -i hosts && \
-	ansible-playbook -b --ask-sudo-pass main.yml -i hosts
+init: test-syntax secure main clean
 
 main:
 	ansible-playbook -b --ask-sudo-pass main.yml -i hosts
