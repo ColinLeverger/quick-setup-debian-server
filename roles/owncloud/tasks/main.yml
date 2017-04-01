@@ -60,6 +60,7 @@
       SCHEDULE: "30 * * * *"
       BACKUP_METHOD: "mysqldump"
       BACKUP_OPTS: "-u root -p {{ owncloud_db_pwd }} -h db-owncloud -d /var/backups/owncloud-db-backup.sql"
+      LOGSPOUT: ignore
 
 # Include special conf to upload the backups created by the docker contener in owncloud itself :-)
 - include: my_specialconfs.yml

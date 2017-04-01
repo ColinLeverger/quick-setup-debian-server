@@ -1,5 +1,7 @@
 ---
 # tasks file for elk
+- include: collectd.yml
+
 - name: Ensure that directories needed exist
   file: path="{{ item }}" state=directory
   with_items:
@@ -36,6 +38,8 @@
     restart_policy: on-failure
     privileged: yes
     command: gosu root logstash -f /config-dir/logstash.conf
+    ports:
+      - "25826:25826/udp"
     links:
       - "elasticsearch:elasticsearch"
     volumes:

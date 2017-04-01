@@ -1,0 +1,56 @@
+Hostname "colin-srv-01"
+
+LoadPlugin interface
+<Plugin interface>
+    Interface "eth0"
+    IgnoreSelected false
+</Plugin>
+
+LoadPlugin df
+<Plugin df>
+    Device "/dev/sda1"
+    MountPoint "/"
+    FSType "ext4"
+</Plugin>
+
+LoadPlugin load
+LoadPlugin memory
+LoadPlugin users
+LoadPlugin swap
+LoadPlugin cpu
+LoadPlugin cpufreq
+LoadPlugin entropy
+
+LoadPlugin network
+<Plugin network>
+    <Server "127.0.0.1" "25826">
+    </Server>
+</Plugin>
+
+LoadPlugin filecount
+<Plugin "filecount">
+    <Directory "/rtorrent/finished">
+        Instance "rtorrent1"
+    </Directory>
+    <Directory "/rtorrent2/finished">
+        Instance "rtorrent2"
+    </Directory>
+    <Directory "/rtorrent3/finished">
+        Instance "rtorrent3"
+    </Directory>
+</Plugin>
+
+LoadPlugin disk
+<Plugin "disk">
+    Disk "sda"
+    Disk "/^hd/"
+    IgnoreSelected false
+</Plugin>
+
+LoadPlugin logfile
+<Plugin "logfile">
+    LogLevel "info"
+    File "/var/log/collectd.log"
+    Timestamp true
+    PrintSeverity true
+</Plugin>
