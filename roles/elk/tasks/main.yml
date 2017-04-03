@@ -28,10 +28,24 @@
       - "/home/elasticsearch:/usr/share/elasticsearch/data"
 
 # 2. logstash
+- name: Ensure that directory for my-logstash docker exists
+  file: path="/tmp/my-logstash/" state=directory
+
+- name: Prepare my-logstash Dockerfile
+  template:
+    src: templates/Dockerfile.j2
+    dest: /tmp/my-logstash/Dockerfile
+
+- name: Build logstash image
+  docker_image:
+    path: /tmp/my-logstash/
+    name: my-logstash
+    tag: v1
+
 - name: Create docker contener for logstash
   docker_container:
     name: logstash
-    image: logstash
+    image: my-logstash:v1
     state: started
     restart_policy: on-failure
     privileged: yes
@@ -43,6 +57,7 @@
     volumes:
       - "/home/logstash/pipeline/:/config-dir"
       - "/var/log:/var/log:ro"
+      - "/usr/share/collectd/types.db:/tmp/types.db:ro"
     env:
       LOGSPOUT: ignore
 
