@@ -1,7 +1,5 @@
 ---
 # tasks file for elk
-- include: collectd.yml
-
 - name: Ensure that directories needed exist
   file: path="{{ item }}" state=directory
   with_items:

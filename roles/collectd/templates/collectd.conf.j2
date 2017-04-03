@@ -1,28 +1,34 @@
 Hostname "colin-srv-01"
 
+LoadPlugin load
+LoadPlugin memory
+LoadPlugin users
+LoadPlugin swap
+LoadPlugin cpufreq
+LoadPlugin entropy
+
 LoadPlugin interface
-<Plugin interface>
+<Plugin "interface">
     Interface "eth0"
     IgnoreSelected false
 </Plugin>
 
 LoadPlugin df
-<Plugin df>
+<Plugin "df">
     Device "/dev/sda1"
     MountPoint "/"
     FSType "ext4"
 </Plugin>
 
-LoadPlugin load
-LoadPlugin memory
-LoadPlugin users
-LoadPlugin swap
 LoadPlugin cpu
-LoadPlugin cpufreq
-LoadPlugin entropy
+<Plugin "cpu">
+    ReportByCpu true
+    ReportByState false
+    ValuesPercentage true
+</Plugin>
 
 LoadPlugin network
-<Plugin network>
+<Plugin "network">
     <Server "127.0.0.1" "25826">
     </Server>
 </Plugin>

@@ -4,8 +4,3 @@
   command: sysctl --system
   become: yes
   become_method: sudo
-
-- name: restart collectd
-  service:
-    name: collectd
-    state: restarted

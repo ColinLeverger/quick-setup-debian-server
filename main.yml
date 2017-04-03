@@ -11,6 +11,8 @@
     - cadvisor
     - owncloud
     - elk
+    - collectd
+    - grafana
 
 - include: seedbox.yml
 
