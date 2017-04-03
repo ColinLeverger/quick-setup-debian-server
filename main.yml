@@ -12,6 +12,7 @@
     - owncloud
     - elk
     - collectd
+    - influxdb
     - grafana
 
 - include: seedbox.yml

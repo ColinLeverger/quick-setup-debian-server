@@ -1,0 +1,35 @@
+---
+# tasks file for influxdb
+# 1. Install
+- name: Ensure that home for influx exists
+  file: path="/home/influxdb" state=directory
+
+- name: Copy conf file for influxdb
+  template:
+    src: templates/influxdb.conf.j2
+    dest: /home/influxdb/influxdb.conf
+
+- name: Configure system to link influx and collectd
+  sysctl:
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    sysctl_set: yes
+    state: present
+    reload: yes
+  with_items:
+    - { name: net.core.rmem_max, value: 26214400 }
+    - { name: net.core.rmem_default, value: 26214400 }
+
+- name: Create docker contener for influxdb
+  docker_container:
+    name: influxdb
+    image: influxdb
+    state: started
+    restart_policy: on-failure
+    command: -config /etc/influxdb/influxdb.conf
+    ports:
+      - "40391:25826/udp"
+    volumes:
+      - "/home/influxdb/:/var/lib/influxdb"
+      - "/home/influxdb/influxdb.conf:/etc/influxdb/influxdb.conf:ro"
+      - "/usr/share/collectd/types.db:/tmp/types.db:ro"

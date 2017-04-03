@@ -16,6 +16,7 @@
     state: started
     links:
       - "elasticsearch:elasticsearch"
+      - "influxdb:influxdb"
     volumes_from:
       - grafana-storage
     env:
