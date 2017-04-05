@@ -17,7 +17,7 @@ ROOT = /data/git/gogs-repositories
 [server]
 DOMAIN           = {{ hosts.gogs }}
 HTTP_PORT        = 3000
-ROOT_URL         = {{ hosts.gogs }}
+ROOT_URL         = https://{{ hosts.gogs }}
 DISABLE_SSH      = true
 SSH_PORT         = 22
 START_SSH_SERVER = false

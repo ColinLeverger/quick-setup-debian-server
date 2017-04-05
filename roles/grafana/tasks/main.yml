@@ -27,3 +27,8 @@
       GF_INSTALL_PLUGINS: "grafana-clock-panel,grafana-simple-json-datasource,raintank-worldping-app,grafana-piechart-panel,ryantxu-ajax-panel,natel-plotly-panel"
       GF_SERVER_ROOT_URL: "https://{{ hosts.grafana }}"
       GF_USERS_ALLOW_SIGN_UP: false
+      GF_SMTP_ENABLED: true
+      GF_SMTP_HOST: "{{ smtp.host }}"
+      GF_SMTP_USER: "{{ smtp.user }}"
+      GF_SMTP_PASSWORD: "{{ smtp.pwd }}"
+      GF_SMTP_FROM_ADDRESS: "{{ smtp.user }}"
