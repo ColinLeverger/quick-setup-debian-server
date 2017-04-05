@@ -4,7 +4,6 @@
     - srv-voeux
     - jenkins
     - gogs
-    - cadvisor
     - owncloud
     - elk
     - collectd
