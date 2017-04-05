@@ -1,0 +1,54 @@
+APP_NAME = Gogs of Colin LEVERGER
+RUN_USER = git
+RUN_MODE = prod
+
+[database]
+DB_TYPE  = mysql
+HOST     = 127.0.0.1:3306
+NAME     = gogs
+USER     = gogs
+PASSWD   = gogs
+SSL_MODE = disable
+PATH     = data/gogs.db
+
+[repository]
+ROOT = /data/git/gogs-repositories
+
+[server]
+DOMAIN           = {{ hosts.gogs }}
+HTTP_PORT        = 3000
+ROOT_URL         = {{ hosts.gogs }}
+DISABLE_SSH      = true
+SSH_PORT         = 22
+START_SSH_SERVER = false
+OFFLINE_MODE     = false
+
+[mailer]
+ENABLED = true
+HOST    = {{ smtp.host }}
+FROM    = {{ smtp.user }}
+USER    = {{ smtp.user }}
+PASSWD  = {{ smtp.pwd }}
+
+[service]
+REGISTER_EMAIL_CONFIRM = true
+ENABLE_NOTIFY_MAIL     = true
+DISABLE_REGISTRATION   = true
+ENABLE_CAPTCHA         = false
+REQUIRE_SIGNIN_VIEW    = false
+
+[picture]
+DISABLE_GRAVATAR        = false
+ENABLE_FEDERATED_AVATAR = true
+
+[session]
+PROVIDER = file
+
+[log]
+MODE      = file
+LEVEL     = Info
+ROOT_PATH = /app/gogs/log
+
+[security]
+INSTALL_LOCK = true
+SECRET_KEY   = yVUwzLU5ud31zLg

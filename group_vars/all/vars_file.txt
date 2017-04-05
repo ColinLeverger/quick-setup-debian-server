@@ -19,6 +19,11 @@ letsencrypt:
 # License & pwd
 owncloud_db_pwd: your_password
 
+smtp:
+  host: something
+  user: your@mail.local
+  pwd: your-password
+
 # Rtorrent
 seedbox_master:
   name: master
