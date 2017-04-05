@@ -1,13 +1,13 @@
 - hosts: user
   roles:
-    - reverse-proxy
-    - srv-voeux
-    - jenkins
-    - gogs
-    - owncloud
+    # - reverse-proxy
+    # - srv-voeux
+    # - jenkins
+    # - gogs
+    # - owncloud
     - elk
     - collectd
-    - influxdb
-    - grafana
+    # - influxdb
+    # - grafana
 
-- include: seedbox.yml
+# - include: seedbox.yml

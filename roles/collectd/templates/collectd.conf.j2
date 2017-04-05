@@ -29,21 +29,8 @@ LoadPlugin cpu
 
 LoadPlugin network
 <Plugin "network">
-    Server "127.0.0.1" "25826"
-    Server "127.0.0.1" "40391"
-</Plugin>
-
-LoadPlugin filecount
-<Plugin "filecount">
-    <Directory "/rtorrent/finished">
-        Instance "rtorrent1"
-    </Directory>
-    <Directory "/rtorrent2/finished">
-        Instance "rtorrent2"
-    </Directory>
-    <Directory "/rtorrent3/finished">
-        Instance "rtorrent3"
-    </Directory>
+    # Server "127.0.0.1" "25826"  # elasticsearch
+    Server "127.0.0.1" "40391"  # influxdb
 </Plugin>
 
 LoadPlugin disk
