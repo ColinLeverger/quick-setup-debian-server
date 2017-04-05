@@ -17,7 +17,6 @@ letsencrypt:
   email: foo@bar.com
 
 # License & pwd
-license_newrelic: your_license
 owncloud_db_pwd: your_password
 
 # Rtorrent
@@ -44,7 +43,6 @@ files:
 
 # Hostnames
 hosts:
-  cadvisor: your-url.com
   files:
     first: your-url.com
     second: your-url.com

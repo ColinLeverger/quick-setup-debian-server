@@ -2,7 +2,6 @@
 - hosts: user
   roles:
     - basic-services
-    - newrelic
     - ansible-role-docker
     - reverse-proxy
     - srv-voeux
