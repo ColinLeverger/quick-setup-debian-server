@@ -806,9 +806,10 @@
   ## Timeout for docker list, info, and stats commands
   timeout = "5s"
   ## Whether to report for each container per-device blkio (8:0, 8:1...) and
-  ## network (eth0, eth1, ...) stats or not perdevice = true
+  ## network (eth0, eth1, ...) stats or not
+  perdevice = true
   ## Whether to report for each container total blkio and network stats or not
-  total = false
+  total = true
 
 # # Read statistics from one or many dovecot servers
 # [[inputs.dovecot]]
@@ -1294,13 +1295,13 @@
 #   interval_slow                   = "30m"
 
 
-# # Read metrics about network interface usage
-# [[inputs.net]]
-#   ## By default, telegraf gathers stats from any up interface (excluding loopback)
-#   ## Setting interfaces will tell it to gather these explicit interfaces,
-#   ## regardless of status.
-#   ##
-#   # interfaces = ["eth0"]
+# Read metrics about network interface usage
+[[inputs.net]]
+  ## By default, telegraf gathers stats from any up interface (excluding loopback)
+  ## Setting interfaces will tell it to gather these explicit interfaces,
+  ## regardless of status.
+  ##
+  # interfaces = ["eth0"]
 
 
 # # TCP or UDP 'ping' given url and collect response time in seconds

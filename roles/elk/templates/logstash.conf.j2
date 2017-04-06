@@ -1,12 +1,4 @@
 input {
-  # udp {
-  #   port => 25826
-  #   buffer_size => 1452
-  #   codec => collectd {
-  #     typesdb => [ "/tmp/types.db" ]
-  #   }
-  #   type => "collectd"
-  # }
   tcp {
     port => 5000
     type => "json"

@@ -6,18 +6,14 @@
     - "/home/logstash"
     - "/home/logstash/pipeline"
     - "/home/kibana"
+    - "/home/elasticsearch"
 
+# 1. elasticsearch
 - name: Ensure that elasticsearch directory is writtable/readable by elasticsearch
   file: path="{{ item }}" state=directory mode=777 recurse=yes
   with_items:
     - "/home/elasticsearch"
 
-- name: Ensure that configuration files are copied in the good paths
-  template: src="{{ item.src }}" dest="{{ item.dest }}"
-  with_items:
-    - { src: 'templates/logstash.conf.j2', dest: '/home/logstash/pipeline/logstash.conf' }
-
-# 1. Elasticsearch
 - name: Create docker contener for elasticsearch
   docker_container:
     name: elasticsearch
@@ -28,9 +24,16 @@
       - "/home/elasticsearch:/usr/share/elasticsearch/data"
 
 # 2. logstash
+# 2.1 configurations files
+- name: Ensure that configuration files are copied in the good paths
+  template: src="{{ item.src }}" dest="{{ item.dest }}"
+  with_items:
+    - { src: 'templates/logstash.conf.j2', dest: '/home/logstash/pipeline/logstash.conf' }
+
 - name: Ensure that directory for my-logstash docker exists
   file: path="/tmp/my-logstash/" state=directory
 
+# 2.2 build my logstash image
 - name: Prepare my-logstash Dockerfile
   template:
     src: templates/Dockerfile.j2
@@ -42,6 +45,7 @@
     name: my-logstash
     tag: v1
 
+# 2.3 docker contener for logstash
 - name: Create docker contener for logstash
   docker_container:
     name: logstash
@@ -53,6 +57,7 @@
     command: gosu root logstash -f /config-dir/logstash.conf
     links:
       - "elasticsearch:elasticsearch"
+      - "influxdb:influxdb"
     volumes:
       - "/home/logstash/pipeline/:/config-dir"
       - "/var/log:/var/log:ro"
@@ -63,6 +68,7 @@
 - name: pause execution to chill a bit
   pause: seconds=260
 
+# 3. Logspout
 - name: Create docker contener for logspout and link it to logstash
   docker_container:
     name: logspout
@@ -78,7 +84,7 @@
     env:
       ROUTE_URIS: logstash+tcp://logstash:5000
 
-# 3. Kibana
+# 4. kibana
 - name: Create docker contener for kibana
   docker_container:
     name: kibana
