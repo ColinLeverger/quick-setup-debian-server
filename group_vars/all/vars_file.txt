@@ -61,4 +61,3 @@ hosts:
   php: your-url.com
   kibana: your-url.com
   grafana: your-url.com
-  influxdb: your-url.com
