@@ -30,7 +30,11 @@ LoadPlugin cpu
 LoadPlugin network
 <Plugin "network">
     # Server "127.0.0.1" "25826"  # elasticsearch
-    Server "127.0.0.1" "40391"  # influxdb
+    <Server "127.0.0.1" "40391"> # influxdb
+        SecurityLevel None
+        Username "collectdrw"
+        Password "{{ influxdb.collectd_rw_pwd }}"
+    </Server>
 </Plugin>
 
 LoadPlugin disk

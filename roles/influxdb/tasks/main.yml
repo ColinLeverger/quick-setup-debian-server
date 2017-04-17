@@ -1,6 +1,9 @@
 ---
 # tasks file for influxdb
 # 1. Install
+- name: Ensure that home for influx is clean
+  file: path="/home/influxdb" state=absent
+
 - name: Ensure that home for influx exists
   file: path="/home/influxdb" state=directory
 
@@ -30,12 +33,47 @@
     state: started
     restart_policy: on-failure
     command: -config /etc/influxdb/influxdb.conf
+    expose:
+      - 8086
     ports:
       - "40391:25826/udp"
     volumes:
       - "/home/influxdb/:/var/lib/influxdb"
       - "/home/influxdb/influxdb.conf:/etc/influxdb/influxdb.conf:ro"
       - "/usr/share/collectd/types.db:/tmp/types.db:ro"
+    env:
+      VIRTUAL_PORT: 8086
+      VIRTUAL_HOST: "{{ hosts.influxdb }}"
+      LETSENCRYPT_HOST: "{{ hosts.influxdb }}"
+      LETSENCRYPT_EMAIL: "{{ letsencrypt.email }}"
+
+- name: pause execution to wait for HTTPS certificate creation
+  pause: seconds=260
+
+- name: "Create root user"
+  shell: "curl -i -XPOST https://{{ hosts.influxdb }}/query --data-urlencode \"q=CREATE USER root WITH PASSWORD '{{ influxdb.root_pwd }}' WITH ALL PRIVILEGES\""
+
+- name: Create telegraf and collectd databases
+  shell: "curl -i -XPOST https://{{ hosts.influxdb }}/query -u root:{{ influxdb.root_pwd }} --data-urlencode \"q=CREATE DATABASE {{ item }}\""
+  with_items:
+    - telegraf
+    - collectd
+
+- name: Create and configure telegraf user
+  shell: "{{ item }}"
+  with_items:
+    - "curl -i -XPOST https://{{ hosts.influxdb }}/query -u root:{{ influxdb.root_pwd }} --data-urlencode \"q=CREATE USER telegrafrw WITH PASSWORD '{{ influxdb.telegraf_rw_pwd }}'\""
+    - "curl -i -XPOST https://{{ hosts.influxdb }}/query -u root:{{ influxdb.root_pwd }} --data-urlencode \"q=GRANT ALL ON telegraf TO telegrafrw\""
+    - "curl -i -XPOST https://{{ hosts.influxdb }}/query -u root:{{ influxdb.root_pwd }} --data-urlencode \"q=CREATE USER telegraf WITH PASSWORD '{{ influxdb.telegraf_r_pwd }}'\""
+    - "curl -i -XPOST https://{{ hosts.influxdb }}/query -u root:{{ influxdb.root_pwd }} --data-urlencode \"q=GRANT READ ON telegraf TO telegraf\""
+
+- name: Create and configure collectd user
+  shell: "{{item}}"
+  with_items:
+    - "curl -i -XPOST https://{{ hosts.influxdb }}/query -u root:{{ influxdb.root_pwd }} --data-urlencode \"q=CREATE USER collectdrw WITH PASSWORD '{{ influxdb.collectd_rw_pwd }}'\""
+    - "curl -i -XPOST https://{{ hosts.influxdb }}/query -u root:{{ influxdb.root_pwd }} --data-urlencode \"q=GRANT ALL ON collectd TO collectdrw\""
+    - "curl -i -XPOST https://{{ hosts.influxdb }}/query -u root:{{ influxdb.root_pwd }} --data-urlencode \"q=CREATE USER collectd WITH PASSWORD '{{ influxdb.collectd_r_pwd }}'\""
+    - "curl -i -XPOST https://{{ hosts.influxdb }}/query -u root:{{ influxdb.root_pwd }} --data-urlencode \"q=GRANT READ ON collectd TO collectd\""
 
 - name: Install telegraf to gather more metrics (more, more, more!)
   docker_container:

@@ -8,6 +8,14 @@ user:
   email: your-email@hey.co
   pwd: your_encrypted_pwd
 
+influxdb:
+  root_pwd: pwd
+  telegraf_r_pwd: pwd
+  telegraf_rw_pwd: pwd
+  collectd_r_pwd: pwd
+  collectd_rw_pwd: pwd
+
+
 # Security of the server
 ssh_port: 1234
 ip: 192.168.0.1
@@ -61,3 +69,4 @@ hosts:
   php: your-url.com
   kibana: your-url.com
   grafana: your-url.com
+  influxdb: your-url.com
