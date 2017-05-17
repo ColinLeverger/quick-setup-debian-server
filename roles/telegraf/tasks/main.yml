@@ -1,0 +1,21 @@
+---
+# tasks file for telegraf
+- name: Copy conf file for influxdb
+  template:
+    src: "templates/{{ item }}.j2"
+    dest: "/home/influxdb/{{item }}"
+  with_items:
+    - telegraf.conf
+
+- name: Install telegraf to gather more metrics (more, more, more!)
+  docker_container:
+    name: telegraf
+    image: telegraf
+    state: started
+    restart_policy: on-failure
+    links:
+      - "influxdb:influxdb"
+      - "elasticsearch:elasticsearch"
+    volumes:
+      - "/home/influxdb/telegraf.conf:/etc/telegraf/telegraf.conf:ro"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"

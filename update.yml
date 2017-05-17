@@ -5,9 +5,10 @@
     - jenkins
     - gogs
     - owncloud
-    - elk
     - collectd
     - influxdb
+    - elk
+    - telegraf
     - grafana
 
 - include: seedbox.yml

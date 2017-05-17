@@ -36,15 +36,15 @@
       ports_down: "{{ seedbox_slaves.ports.dl }}"
       h5ai_name: "{{ files.slaves.second }}"
       h5ai_host: "{{ hosts.files.second }}"
-  - name: third slave seedbox
-    role: seedbox
-    vars:
-      srv_root: "/rtorrent4"
-      seedbox_name: "{{ seedbox_slaves.names.third }}"
-      letsencrypt_host: "{{ hosts.seedbox_slaves.third }}"
-      letsencrypt_email: "{{ letsencrypt.email }}"
-      host_seedbox: "{{ hosts.seedbox_slaves.third }}"
-      ports_up: "{{ seedbox_slaves.ports.up }}"
-      ports_down: "{{ seedbox_slaves.ports.dl }}"
-      h5ai_name: "{{ files.slaves.third }}"
-      h5ai_host: "{{ hosts.files.third }}"
+  # - name: third slave seedbox
+  #   role: seedbox
+  #   vars:
+  #     srv_root: "/rtorrent4"
+  #     seedbox_name: "{{ seedbox_slaves.names.third }}"
+  #     letsencrypt_host: "{{ hosts.seedbox_slaves.third }}"
+  #     letsencrypt_email: "{{ letsencrypt.email }}"
+  #     host_seedbox: "{{ hosts.seedbox_slaves.third }}"
+  #     ports_up: "{{ seedbox_slaves.ports.up }}"
+  #     ports_down: "{{ seedbox_slaves.ports.dl }}"
+  #     h5ai_name: "{{ files.slaves.third }}"
+  #     h5ai_host: "{{ hosts.files.third }}"

@@ -7,13 +7,12 @@
 - name: Ensure that home for influx exists
   file: path="/home/influxdb" state=directory
 
-- name: Copy conf file for influxdb and telegraf
+- name: Copy conf file for influxdb
   template:
     src: "templates/{{ item }}.j2"
     dest: "/home/influxdb/{{item }}"
   with_items:
     - influxdb.conf
-    - telegraf.conf
 
 - name: Configure system to link influx and collectd
   sysctl:
@@ -74,16 +73,3 @@
     - "curl -i -XPOST https://{{ hosts.influxdb }}/query -u root:{{ influxdb.root_pwd }} --data-urlencode \"q=GRANT ALL ON collectd TO collectdrw\""
     - "curl -i -XPOST https://{{ hosts.influxdb }}/query -u root:{{ influxdb.root_pwd }} --data-urlencode \"q=CREATE USER collectd WITH PASSWORD '{{ influxdb.collectd_r_pwd }}'\""
     - "curl -i -XPOST https://{{ hosts.influxdb }}/query -u root:{{ influxdb.root_pwd }} --data-urlencode \"q=GRANT READ ON collectd TO collectd\""
-
-- name: Install telegraf to gather more metrics (more, more, more!)
-  docker_container:
-    name: telegraf
-    image: telegraf
-    state: started
-    restart_policy: on-failure
-    links:
-      - "influxdb:influxdb"
-      - "elasticsearch:elasticsearch"
-    volumes:
-      - "/home/influxdb/telegraf.conf:/etc/telegraf/telegraf.conf:ro"
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
